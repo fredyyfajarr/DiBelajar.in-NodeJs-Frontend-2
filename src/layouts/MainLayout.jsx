@@ -1,5 +1,5 @@
-import React from 'react';
-import { useLocation, Outlet } from 'react-router-dom'; // <-- Import Outlet & useLocation
+import React, { Suspense } from 'react'; // Import Suspense
+import { useLocation, Outlet } from 'react-router-dom';
 import Navbar from '/src/components/Navbar.jsx';
 import Footer from '/src/components/Footer.jsx';
 import Modal from '/src/components/Modal.jsx';
@@ -13,35 +13,42 @@ const MainLayout = () => {
   const { isModalOpen, modalView, closeModal } = useModalStore();
   const location = useLocation();
 
-  // Cek apakah URL saat ini adalah halaman admin atau instruktur
   const isPanelPage =
     location.pathname.startsWith('/admin') ||
     location.pathname.startsWith('/instructor');
+
+  // UI Fallback untuk ditampilkan saat halaman sedang diunduh
+  const pageLoadingFallback = (
+    <div className="flex justify-center items-center h-full p-10">
+      <p>Memuat...</p>
+    </div>
+  );
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
       <Navbar />
 
-      {/* Konten Utama yang Dinamis */}
       <main className="flex-grow">
         {isPanelPage ? (
-          // Jika ini halaman admin/instruktur, gunakan layout 2 kolom
           <div className="container mx-auto flex gap-8 py-8 px-4 sm:px-6">
             <AdminSidebar />
             <div className="w-full">
-              <Outlet />{' '}
-              {/* <-- Halaman (misal: UserManagementPage) akan dirender di sini */}
+              {/* Bungkus Outlet dengan Suspense */}
+              <Suspense fallback={pageLoadingFallback}>
+                <Outlet />
+              </Suspense>
             </div>
           </div>
         ) : (
-          // Jika bukan, tampilkan konten halaman secara normal
-          <Outlet />
+          /* Bungkus Outlet dengan Suspense */
+          <Suspense fallback={pageLoadingFallback}>
+            <Outlet />
+          </Suspense>
         )}
       </main>
 
       <Footer />
 
-      {/* Modal untuk Login, Register, dll. */}
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         {modalView === 'LOGIN' && <LoginPage />}
         {modalView === 'REGISTER' && <RegisterPage />}

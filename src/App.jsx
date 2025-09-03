@@ -1,3 +1,4 @@
+import React from 'react'; // Hapus 'Suspense' dari sini
 import {
   BrowserRouter as Router,
   Routes,
@@ -5,32 +6,50 @@ import {
   Navigate,
 } from 'react-router-dom';
 
-// Layout
+// Layout dan komponen Rute
 import MainLayout from '/src/layouts/MainLayout.jsx';
-
-// Pages
-import LandingPage from '/src/pages/LandingPage.jsx';
-import CourseDetailPage from './pages/CourseDetailPage';
-import DashboardPage from '/src/pages/DashboardPage.jsx';
-import AdminDashboardPage from '/src/pages/admin/AdminDashboardPage.jsx';
-import UserManagementPage from '/src/pages/admin/UserManagementPage.jsx';
-import CourseManagementPage from '/src/pages/admin/CourseManagementPage.jsx';
-import MaterialManagementPage from '/src/pages/admin/MaterialManagementPage.jsx';
-import MaterialDetailPage from '/src/pages/admin/MaterialDetailPage.jsx';
-import EnrollmentManagementPage from '/src/pages/admin/EnrollmentManagementPage.jsx';
-import InstructorEnrollmentPage from '/src/pages/instructor/InstructorEnrollmentPage.jsx';
-import StudentDashboardPage from './pages/student/StudentDashboardPage';
-import LearningPage from './pages/student/LearningPage';
-
-// Components
 import ProtectedRoute from '/src/components/ProtectedRoute.jsx';
 import RoleBasedRoute from '/src/components/RoleBasedRoute.jsx';
+
+// Semua halaman tetap di-import menggunakan React.lazy
+const LandingPage = React.lazy(() => import('/src/pages/LandingPage.jsx'));
+const CourseDetailPage = React.lazy(() =>
+  import('/src/pages/CourseDetailPage.jsx')
+);
+const DashboardPage = React.lazy(() => import('/src/pages/DashboardPage.jsx'));
+const AdminDashboardPage = React.lazy(() =>
+  import('/src/pages/admin/AdminDashboardPage.jsx')
+);
+const UserManagementPage = React.lazy(() =>
+  import('/src/pages/admin/UserManagementPage.jsx')
+);
+const CourseManagementPage = React.lazy(() =>
+  import('/src/pages/admin/CourseManagementPage.jsx')
+);
+const MaterialManagementPage = React.lazy(() =>
+  import('/src/pages/admin/MaterialManagementPage.jsx')
+);
+const MaterialDetailPage = React.lazy(() =>
+  import('/src/pages/admin/MaterialDetailPage.jsx')
+);
+const EnrollmentManagementPage = React.lazy(() =>
+  import('/src/pages/admin/EnrollmentManagementPage.jsx')
+);
+const InstructorEnrollmentPage = React.lazy(() =>
+  import('/src/pages/instructor/InstructorEnrollmentPage.jsx')
+);
+const StudentDashboardPage = React.lazy(() =>
+  import('/src/pages/student/StudentDashboardPage.jsx')
+);
+const LearningPage = React.lazy(() =>
+  import('/src/pages/student/LearningPage.jsx')
+);
 
 function App() {
   return (
     <Router>
       <Routes>
-        {/* MainLayout sekarang menjadi 'pintu gerbang' untuk semua halaman */}
+        {/* Suspense sudah dihapus dari sini */}
         <Route element={<MainLayout />}>
           {/* Rute Publik */}
           <Route path="/" element={<LandingPage />} />
@@ -40,7 +59,6 @@ function App() {
           {/* Rute Terproteksi */}
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<DashboardPage />} />
-            {/* --- TAMBAHKAN RUTE STUDENT DI SINI --- */}
             <Route
               path="/student-dashboard"
               element={<StudentDashboardPage />}
@@ -82,13 +100,10 @@ function App() {
                 path="courses/:courseId/materials"
                 element={<MaterialManagementPage />}
               />
-
-              {/* 👇 TAMBAHKAN RUTE BARU DI SINI 👇 */}
               <Route
                 path="courses/:courseId/materials/:materialId"
                 element={<MaterialDetailPage />}
               />
-
               <Route
                 path="courses/:courseId/enrollments"
                 element={<InstructorEnrollmentPage />}
