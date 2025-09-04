@@ -50,3 +50,19 @@ export const useSubmitTestResult = () => {
     },
   });
 };
+
+export const useUpdateProgress = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: studentService.updateProgress,
+    onSuccess: (data, variables) => {
+      // Invalidate query course detail untuk me-refetch data progress
+      queryClient.invalidateQueries({
+        queryKey: ['course', variables.courseSlug],
+      });
+    },
+    onError: (error) => {
+      alert(error.response?.data?.error || 'Gagal memperbarui progres.');
+    },
+  });
+};

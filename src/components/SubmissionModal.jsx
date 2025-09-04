@@ -1,22 +1,45 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import Modal from './Modal';
-import { useSubmitAssignment } from '/src/hooks/useStudent.js';
+// Impor useUpdateProgress
+import {
+  useSubmitAssignment,
+  useUpdateProgress,
+} from '/src/hooks/useStudent.js';
 
-const SubmissionModal = ({ isOpen, onClose, courseId, material }) => {
+const SubmissionModal = ({
+  isOpen,
+  onClose,
+  courseId,
+  material,
+  courseSlug,
+}) => {
+  // Tambahkan courseSlug sebagai prop
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
   const { mutate: submit, isPending } = useSubmitAssignment();
+  const { mutate: updateProgress } = useUpdateProgress(); // Gunakan hook
 
   const onSubmit = (data) => {
     const formData = new FormData();
     formData.append('submissionFile', data.submissionFile[0]);
     submit(
       { courseId, materialId: material._id, formData },
-      { onSuccess: onClose }
+      {
+        onSuccess: () => {
+          // Setelah tugas berhasil, panggil updateProgress
+          updateProgress({
+            courseId,
+            materialId: material._id,
+            step: 'assignment',
+            courseSlug,
+          });
+          onClose();
+        },
+      }
     );
   };
 

@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import Modal from './Modal';
 import { useForumPosts, useCreateForumPost } from '/src/hooks/useAdmin.js';
+import { useUpdateProgress } from '/src/hooks/useStudent.js'; // Impor hook progress
 import useAuthStore from '/src/store/authStore.js';
 
 // Komponen terpisah untuk satu postingan
@@ -57,11 +58,13 @@ const Post = ({ post, onReplyClick, isReplyingToThis }) => {
 };
 
 // Komponen Modal Utama
-const ForumModal = ({ isOpen, onClose, courseId, material }) => {
+const ForumModal = ({ isOpen, onClose, courseId, material, courseSlug }) => {
+  // Tambahkan courseSlug
   const { data: response, isLoading } = useForumPosts(courseId, material?._id);
   const posts = response?.data?.data || [];
 
   const { mutate: createPost, isPending } = useCreateForumPost();
+  const { mutate: updateProgress } = useUpdateProgress(); // Gunakan hook
   const { register, handleSubmit, reset, setFocus } = useForm();
 
   const [replyingTo, setReplyingTo] = useState(null);
@@ -88,6 +91,13 @@ const ForumModal = ({ isOpen, onClose, courseId, material }) => {
       },
       {
         onSuccess: () => {
+          // Setelah berhasil posting, update progress
+          updateProgress({
+            courseId,
+            materialId: material._id,
+            step: 'forum',
+            courseSlug,
+          });
           reset();
           cancelReply();
         },
@@ -104,7 +114,6 @@ const ForumModal = ({ isOpen, onClose, courseId, material }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      {/* --- UKURAN DIPERBESAR DI SINI (max-w-4xl) --- */}
       <div className="p-6 w-full max-w-4xl flex flex-col h-[80vh]">
         <h2 className="text-2xl font-bold mb-4 flex-shrink-0">
           Diskusi: {material?.title}

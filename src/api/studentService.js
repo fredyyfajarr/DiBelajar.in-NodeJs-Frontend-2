@@ -41,6 +41,14 @@ const createForumPost = ({ courseId, materialId, postData }) => {
   );
 };
 
+const updateProgress = ({ courseId, materialId, step }) => {
+  // Kita hanya perlu mengirim 'step', courseId dan materialId sudah ada di URL
+  return axiosInstance.put(
+    `/courses/${courseId}/materials/${materialId}/progress`,
+    { step }
+  );
+};
+
 export default {
   enrollInCourse,
   getMyEnrollments,
@@ -48,4 +56,5 @@ export default {
   submitTestResult,
   getForumPosts,
   createForumPost,
+  updateProgress,
 };
