@@ -13,7 +13,6 @@ const UserFormModal = ({ isOpen, onClose, mode, currentUser }) => {
   const { mutate: createUser, isPending: isCreating } = useCreateUser();
   const { mutate: updateUser, isPending: isUpdating } = useUpdateUser();
 
-  // Reset form saat data currentUser berubah (saat membuka modal edit)
   useEffect(() => {
     if (mode === 'edit' && currentUser) {
       reset({
@@ -28,7 +27,6 @@ const UserFormModal = ({ isOpen, onClose, mode, currentUser }) => {
 
   const onSubmit = (data) => {
     if (mode === 'edit') {
-      // Filter out empty password field so it doesn't overwrite existing one
       if (!data.password) delete data.password;
       updateUser(
         { userId: currentUser._id, userData: data },
@@ -47,7 +45,8 @@ const UserFormModal = ({ isOpen, onClose, mode, currentUser }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="p-6 w-full max-w-md">
+      {/* --- UKURAN DIPERBESAR DI SINI --- */}
+      <div className="p-6 w-full max-w-2xl">
         <h2 className="text-2xl font-bold mb-4">
           {mode === 'edit' ? 'Edit Pengguna' : 'Tambah Pengguna Baru'}
         </h2>

@@ -65,3 +65,4 @@ Ini adalah bagian frontend dari aplikasi Learning Management System (LMS) "DiBel
 * `npm run dev`: Menjalankan aplikasi dalam mode development.
 * `npm run build`: Mem-build aplikasi untuk production ke dalam folder `dist`.
 * `npm run preview`: Menjalankan server lokal untuk melihat hasil production build.
+

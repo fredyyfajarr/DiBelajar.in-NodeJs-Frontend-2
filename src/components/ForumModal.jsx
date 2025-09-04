@@ -16,7 +16,7 @@ const Post = ({ post, onReplyClick, isReplyingToThis }) => {
     <div className="flex flex-col">
       <div className={`flex gap-3 ${isOwnPost ? 'justify-end' : ''}`}>
         <div
-          className={`p-3 rounded-lg max-w-sm transition-all ${
+          className={`p-3 rounded-lg max-w-md transition-all ${
             isOwnPost ? 'bg-primary text-white' : 'bg-gray-200'
           } ${highlightClass}`}
         >
@@ -58,8 +58,6 @@ const Post = ({ post, onReplyClick, isReplyingToThis }) => {
 // Komponen Modal Utama
 const ForumModal = ({ isOpen, onClose, courseId, material }) => {
   const { data: response, isLoading } = useForumPosts(courseId, material?._id);
-
-  // --- PERBAIKAN FINAL DI SINI ---
   const posts = response?.data?.data || [];
 
   const { mutate: createPost, isPending } = useCreateForumPost();
@@ -105,7 +103,8 @@ const ForumModal = ({ isOpen, onClose, courseId, material }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="p-6 w-full max-w-2xl flex flex-col h-[80vh]">
+      {/* --- UKURAN DIPERBESAR DI SINI (max-w-4xl) --- */}
+      <div className="p-6 w-full max-w-4xl flex flex-col h-[80vh]">
         <h2 className="text-2xl font-bold mb-4 flex-shrink-0">
           Diskusi: {material?.title}
         </h2>

@@ -17,7 +17,11 @@ const CourseCard = ({ course }) => {
     'https://placehold.co/600x400/7c3aed/white?text=DiBelajar.in';
 
   return (
-    <motion.div variants={cardVariants} className="h-full">
+    <motion.div
+      variants={cardVariants}
+      className="h-full"
+      whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
+    >
       <Link
         to={`/courses/${course.slug || course._id}`}
         className="block group h-full"

@@ -1,5 +1,7 @@
+// src/components/admin/CourseFormModal.jsx
+
 import React, { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form'; // 1. Import Controller
 import Modal from '/src/components/Modal.jsx';
 import {
   useCreateCourse,
@@ -8,6 +10,9 @@ import {
 } from '/src/hooks/useAdmin.js';
 import useAuthStore from '/src/store/authStore.js';
 
+// 2. Import Froala Editor
+import FroalaEditor from 'react-froala-wysiwyg';
+
 const CourseFormModal = ({ isOpen, onClose, mode, currentCourse }) => {
   const {
     register,
@@ -15,16 +20,16 @@ const CourseFormModal = ({ isOpen, onClose, mode, currentCourse }) => {
     reset,
     watch,
     setValue,
+    control, // <-- Pastikan 'control' diambil dari useForm
     formState: { errors },
   } = useForm();
-  const [preview, setPreview] = useState(null);
 
+  const [preview, setPreview] = useState(null);
   const { user } = useAuthStore();
   const { mutate: createCourse, isPending: isCreating } = useCreateCourse();
   const { mutate: updateCourse, isPending: isUpdating } = useUpdateCourse();
   const { data: instructorsResponse } = useInstructors();
   const instructors = instructorsResponse?.data?.data || [];
-
   const thumbnailFile = watch('thumbnail');
 
   useEffect(() => {
@@ -56,26 +61,19 @@ const CourseFormModal = ({ isOpen, onClose, mode, currentCourse }) => {
 
   const onSubmit = (data) => {
     const formData = new FormData();
-
     formData.append('title', data.title);
     formData.append('description', data.description);
     formData.append('instructorId', data.instructorId || user._id);
-
     if (data.thumbnail && data.thumbnail[0] instanceof File) {
       formData.append('thumbnail', data.thumbnail[0]);
     }
-
     if (mode === 'edit') {
       updateCourse(
         { courseId: currentCourse._id, formData },
-        {
-          onSuccess: onClose,
-        }
+        { onSuccess: onClose }
       );
     } else {
-      createCourse(formData, {
-        onSuccess: onClose,
-      });
+      createCourse(formData, { onSuccess: onClose });
     }
   };
 
@@ -83,7 +81,9 @@ const CourseFormModal = ({ isOpen, onClose, mode, currentCourse }) => {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div className="p-6 w-full max-w-lg">
+      <div className="p-6 w-full max-w-4xl">
+        {' '}
+        {/* Dibuat lebih besar */}
         <h2 className="text-2xl font-bold mb-4">
           {mode === 'edit' ? 'Edit Kursus' : 'Tambah Kursus Baru'}
         </h2>
@@ -102,17 +102,29 @@ const CourseFormModal = ({ isOpen, onClose, mode, currentCourse }) => {
               </p>
             )}
           </div>
+
+          {/* 3. GANTI TEXTAREA DENGAN FROALA EDITOR */}
           <div>
             <label className="block text-sm font-medium text-text-muted">
               Deskripsi
             </label>
-            <textarea
-              {...register('description', {
-                required: 'Deskripsi wajib diisi',
-              })}
-              rows="4"
-              className="mt-1 block w-full border border-border rounded-md shadow-sm py-2 px-3"
-            ></textarea>
+            <Controller
+              name="description"
+              control={control}
+              rules={{ required: 'Deskripsi wajib diisi' }}
+              render={({ field: { onChange, value } }) => (
+                <FroalaEditor
+                  tag="textarea"
+                  model={value}
+                  onModelChange={onChange}
+                  config={{
+                    placeholderText:
+                      'Tulis deskripsi kursus yang menarik di sini...',
+                    heightMin: 200,
+                  }}
+                />
+              )}
+            />
             {errors.description && (
               <p className="text-red-500 text-xs mt-1">
                 {errors.description.message}
@@ -171,6 +183,7 @@ const CourseFormModal = ({ isOpen, onClose, mode, currentCourse }) => {
               </p>
             )}
           </div>
+
           <div className="pt-4 flex justify-end gap-2">
             <button
               type="button"
