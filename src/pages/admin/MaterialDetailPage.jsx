@@ -194,7 +194,7 @@ const MaterialDetailPage = () => {
             <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 font-sans mt-2">
               Detail Materi:{' '}
               <span className="font-normal">
-                {materialDetail?.title || '...'}
+                {materialDetail?.data?.title || '...'}
               </span>
             </h1>
           </div>
