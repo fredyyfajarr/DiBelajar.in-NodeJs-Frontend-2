@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import useAuthStore from '/src/store/authStore.js';
 import { useMyEnrollments } from '/src/hooks/useStudent.js';

@@ -16,6 +16,7 @@ const ProgressStep = ({
   onClick,
   buttonText,
 }) => {
+  // ... (Tidak ada perubahan di komponen ini) ...
   const CheckboxIcon = () => (
     <div
       className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 flex-shrink-0 ${
@@ -74,12 +75,24 @@ const MaterialItem = ({
   courseId,
   courseSlug,
 }) => {
+  // DEBUG 3: Tampilkan data material dan progress yang diterima komponen ini
+  console.log(`[MaterialItem #${index + 1}] Data Material:`, material);
+  console.log(`[MaterialItem #${index + 1}] Data Progress Diterima:`, progress);
+
   const testCompleted = progress?.hasCompletedTest || false;
   const assignmentSubmitted = progress?.hasSubmittedAssignment || false;
   const forumPostCount = progress?.forumPostCount || 0;
   const materialCompleted = progress?.isCompleted || false;
-
   const hasTest = material.testContent && material.testContent.length > 0;
+
+  // DEBUG 4: Tampilkan hasil kalkulasi status progres
+  console.log(`[MaterialItem #${index + 1}] Status Kalkulasi:`, {
+    hasTest,
+    testCompleted,
+    assignmentSubmitted,
+    forumPostCount,
+    materialCompleted,
+  });
 
   const { mutate: updateProgress } = useUpdateProgress();
   const handleCompleteMaterial = () => {
@@ -112,7 +125,6 @@ const MaterialItem = ({
       }`}
     >
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-6">
-        {/* Kolom Kiri: Judul dan Deskripsi */}
         <div className="lg:col-span-2">
           <h3 className="text-xl font-bold text-gray-900 font-sans mb-2">
             #{index + 1}: {material.title}
@@ -123,7 +135,6 @@ const MaterialItem = ({
           />
         </div>
 
-        {/* Kolom Kanan: Daftar Tugas / Checklist */}
         <div className="lg:col-span-1">
           <div className="space-y-3 p-4 bg-gray-100 rounded-lg border">
             <h4 className="font-semibold text-center mb-2 text-gray-700">
@@ -133,7 +144,7 @@ const MaterialItem = ({
               <ProgressStep
                 label="Kerjakan Tes"
                 isCompleted={testCompleted}
-                isDisabled={false}
+                isDisabled={testCompleted}
                 onClick={() => onButtonClick('test', material)}
                 buttonText="Mulai Tes"
               />
@@ -141,11 +152,10 @@ const MaterialItem = ({
             <ProgressStep
               label="Kumpulkan Tugas"
               isCompleted={assignmentSubmitted}
-              isDisabled={hasTest ? !testCompleted : false}
+              isDisabled={(hasTest && !testCompleted) || assignmentSubmitted}
               onClick={() => onButtonClick('assignment', material)}
               buttonText="Kumpulkan"
             />
-            {/* Tampilan baru untuk Forum Diskusi */}
             <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg min-h-[52px]">
               <div className="flex items-center">
                 <div
@@ -181,16 +191,13 @@ const MaterialItem = ({
               </div>
               <button
                 onClick={() => onButtonClick('forum', material)}
-                disabled={
-                  (hasTest ? !testCompleted : false) || !assignmentSubmitted
-                }
+                disabled={!assignmentSubmitted}
                 className="px-4 py-1.5 bg-purple-600 text-white text-sm font-semibold rounded-md hover:bg-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ml-2"
               >
                 Diskusi
               </button>
             </div>
           </div>
-
           {canCompleteMaterial && (
             <div className="mt-4">
               <button
@@ -201,7 +208,6 @@ const MaterialItem = ({
               </button>
             </div>
           )}
-
           {materialCompleted && (
             <p className="mt-4 text-sm font-semibold text-green-700 text-center">
               ✓ Materi Telah Selesai
@@ -220,16 +226,23 @@ const LearningPage = () => {
   const [activeModal, setActiveModal] = useState(null);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
 
+  // DEBUG 1: Tampilkan data mentah dari API
+  useEffect(() => {
+    if (data) {
+      console.log('========================================');
+      console.log('DEBUG 1: Data mentah dari hook useCourseDetail:', data);
+      console.log('========================================');
+    }
+  }, [data]);
+
   const handleOpenModal = (modalType, material) => {
     setSelectedMaterial(material);
     setActiveModal(modalType);
   };
-
   const handleCloseModal = () => {
     setActiveModal(null);
     setSelectedMaterial(null);
   };
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -237,7 +250,6 @@ const LearningPage = () => {
       transition: { duration: 0.5, staggerChildren: 0.1 },
     },
   };
-
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen text-gray-600">
@@ -254,6 +266,13 @@ const LearningPage = () => {
   }
 
   const { course, materials, enrollment } = data;
+
+  // DEBUG 2: Tampilkan data setelah di-destructure
+  console.log('DEBUG 2: Data setelah di-destructure:', {
+    course,
+    materials,
+    enrollment,
+  });
 
   return (
     <motion.div
@@ -274,7 +293,6 @@ const LearningPage = () => {
       <h2 className="text-2xl font-semibold text-gray-900 font-sans mb-6">
         Materi Pembelajaran
       </h2>
-
       <div className="flex flex-col gap-6">
         {materials.map((material, index) => {
           const materialProgress = enrollment?.progress.find(

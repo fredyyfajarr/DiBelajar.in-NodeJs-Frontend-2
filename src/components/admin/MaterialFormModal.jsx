@@ -6,7 +6,7 @@ import { useCreateMaterial, useUpdateMaterial } from '/src/hooks/useAdmin.js';
 import FroalaEditor from 'react-froala-wysiwyg';
 
 // Komponen terpisah untuk mengelola Opsi Jawaban
-const OptionsArray = ({ control, nestIndex, register }) => {
+const OptionsArray = ({ control, nestIndex, register, getValues }) => {
   const { fields, append, remove, update } = useFieldArray({
     control,
     name: `testContent.${nestIndex}.options`,
@@ -23,8 +23,15 @@ const OptionsArray = ({ control, nestIndex, register }) => {
             type="radio"
             name={`correctOption_${nestIndex}`}
             onChange={() => {
-              fields.forEach((field, idx) => {
-                update(idx, { ...field, isCorrect: idx === k });
+              // PERBAIKAN: Ambil nilai terkini dari form
+              const options = getValues(`testContent.${nestIndex}.options`);
+
+              options.forEach((option, idx) => {
+                // Update dengan mempertahankan optionText yang sudah ada
+                update(idx, {
+                  ...option, // <-- Gunakan data terkini dari 'options'
+                  isCorrect: idx === k,
+                });
               });
             }}
             checked={item.isCorrect}
@@ -69,6 +76,7 @@ const MaterialFormModal = ({
     handleSubmit,
     reset,
     control,
+    getValues,
     formState: { errors },
   } = useForm({
     defaultValues: {
@@ -103,10 +111,23 @@ const MaterialFormModal = ({
         });
       }
     }
+    return () => {
+      if (!isOpen) {
+        reset({
+          title: '',
+          description: '',
+          testContent: [],
+        });
+      }
+    };
   }, [currentMaterial, mode, reset, isOpen]);
 
   const onSubmit = (data) => {
     // Hapus testContent jika kosong agar tidak tersimpan di DB
+    const handleSuccess = () => {
+      reset(); // <-- PERBAIKAN: Reset form di sini
+      onClose(); // Kemudian tutup modal
+    };
     if (data.testContent?.length === 0) {
       delete data.testContent;
     }
@@ -114,10 +135,13 @@ const MaterialFormModal = ({
     if (mode === 'edit') {
       updateMaterial(
         { courseId, materialId: currentMaterial._id, materialData: data },
-        { onSuccess: onClose }
+        { onSuccess: handleSuccess }
       );
     } else {
-      createMaterial({ courseId, materialData: data }, { onSuccess: onClose });
+      createMaterial(
+        { courseId, materialData: data },
+        { onSuccess: handleSuccess }
+      );
     }
   };
 
@@ -208,6 +232,7 @@ const MaterialFormModal = ({
                       control={control}
                       nestIndex={index}
                       register={register}
+                      getValues={getValues}
                     />
                   )}
                 />
