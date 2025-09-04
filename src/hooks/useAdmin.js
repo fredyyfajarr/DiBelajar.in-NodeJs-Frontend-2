@@ -246,10 +246,13 @@ export const useCreateForumPost = () => {
   return useMutation({
     mutationFn: studentService.createForumPost,
     onSuccess: (data, variables) => {
-      // Setelah berhasil posting, muat ulang (refetch) daftar postingan
-      // agar postingan baru langsung muncul.
+      // Invalidate query postingan forum agar post baru muncul di modal
       queryClient.invalidateQueries({
         queryKey: ['forum-posts', variables.materialId],
+      });
+      // TAMBAHKAN INI: Invalidate query detail kursus agar counter di LearningPage terupdate
+      queryClient.invalidateQueries({
+        queryKey: ['course', variables.courseSlug],
       });
     },
     onError: (error) => {

@@ -8,7 +8,7 @@ import SubmissionModal from '/src/components/SubmissionModal.jsx';
 import TestModal from '../../components/TestModal.jsx';
 import ForumModal from '../../components/ForumModal.jsx';
 
-// Komponen ProgressStep (tidak ada perubahan)
+// Komponen untuk menampilkan setiap langkah progres (checklist)
 const ProgressStep = ({
   label,
   isCompleted,
@@ -18,7 +18,7 @@ const ProgressStep = ({
 }) => {
   const CheckboxIcon = () => (
     <div
-      className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 ${
+      className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 flex-shrink-0 ${
         isCompleted ? 'bg-green-500' : 'bg-gray-300'
       }`}
     >
@@ -41,7 +41,7 @@ const ProgressStep = ({
   );
 
   return (
-    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg min-h-[52px]">
       <div className="flex items-center">
         <CheckboxIcon />
         <span
@@ -56,7 +56,7 @@ const ProgressStep = ({
         <button
           onClick={onClick}
           disabled={isDisabled}
-          className="px-4 py-1.5 bg-indigo-600 text-white text-sm font-semibold rounded-md hover:bg-indigo-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-4 py-1.5 bg-indigo-600 text-white text-sm font-semibold rounded-md hover:bg-indigo-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ml-2"
         >
           {buttonText}
         </button>
@@ -65,7 +65,7 @@ const ProgressStep = ({
   );
 };
 
-// --- KOMPONEN MATERIALITEM DENGAN LAYOUT BARU ---
+// Komponen untuk setiap kartu materi dengan layout baru
 const MaterialItem = ({
   material,
   index,
@@ -76,7 +76,7 @@ const MaterialItem = ({
 }) => {
   const testCompleted = progress?.hasCompletedTest || false;
   const assignmentSubmitted = progress?.hasSubmittedAssignment || false;
-  const forumParticipated = progress?.hasParticipatedInForum || false;
+  const forumPostCount = progress?.forumPostCount || 0;
   const materialCompleted = progress?.isCompleted || false;
 
   const hasTest = material.testContent && material.testContent.length > 0;
@@ -96,7 +96,7 @@ const MaterialItem = ({
   const canCompleteMaterial =
     (hasTest ? testCompleted : true) &&
     assignmentSubmitted &&
-    forumParticipated &&
+    forumPostCount >= 2 &&
     !materialCompleted;
 
   const cardVariants = {
@@ -111,7 +111,7 @@ const MaterialItem = ({
         materialCompleted ? 'border-green-500 bg-green-50' : 'border-gray-100'
       }`}
     >
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-6">
         {/* Kolom Kiri: Judul dan Deskripsi */}
         <div className="lg:col-span-2">
           <h3 className="text-xl font-bold text-gray-900 font-sans mb-2">
@@ -125,8 +125,10 @@ const MaterialItem = ({
 
         {/* Kolom Kanan: Daftar Tugas / Checklist */}
         <div className="lg:col-span-1">
-          <div className="space-y-3 p-4 bg-gray-50 rounded-lg border">
-            <h4 className="font-semibold text-center mb-2">Progres Anda</h4>
+          <div className="space-y-3 p-4 bg-gray-100 rounded-lg border">
+            <h4 className="font-semibold text-center mb-2 text-gray-700">
+              Progres Anda
+            </h4>
             {hasTest && (
               <ProgressStep
                 label="Kerjakan Tes"
@@ -143,15 +145,50 @@ const MaterialItem = ({
               onClick={() => onButtonClick('assignment', material)}
               buttonText="Kumpulkan"
             />
-            <ProgressStep
-              label="Ikut Diskusi"
-              isCompleted={forumParticipated}
-              isDisabled={
-                (hasTest ? !testCompleted : false) || !assignmentSubmitted
-              }
-              onClick={() => onButtonClick('forum', material)}
-              buttonText="Diskusi"
-            />
+            {/* Tampilan baru untuk Forum Diskusi */}
+            <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg min-h-[52px]">
+              <div className="flex items-center">
+                <div
+                  className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 flex-shrink-0 ${
+                    forumPostCount >= 2 ? 'bg-green-500' : 'bg-gray-300'
+                  }`}
+                >
+                  {forumPostCount >= 2 && (
+                    <svg
+                      className="w-4 h-4 text-white"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="3"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  )}
+                </div>
+                <span
+                  className={`font-medium ${
+                    forumPostCount >= 2
+                      ? 'text-gray-400 line-through'
+                      : 'text-gray-800'
+                  }`}
+                >
+                  Diskusi Forum ({forumPostCount}/2 Post)
+                </span>
+              </div>
+              <button
+                onClick={() => onButtonClick('forum', material)}
+                disabled={
+                  (hasTest ? !testCompleted : false) || !assignmentSubmitted
+                }
+                className="px-4 py-1.5 bg-purple-600 text-white text-sm font-semibold rounded-md hover:bg-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ml-2"
+              >
+                Diskusi
+              </button>
+            </div>
           </div>
 
           {canCompleteMaterial && (
@@ -176,10 +213,10 @@ const MaterialItem = ({
   );
 };
 
-// --- KOMPONEN UTAMA LEARNINGPAGE ---
+// Komponen utama LearningPage
 const LearningPage = () => {
   const { courseSlug } = useParams();
-  const { data, isLoading, isError, isSuccess } = useCourseDetail(courseSlug);
+  const { data, isLoading, isError } = useCourseDetail(courseSlug);
   const [activeModal, setActiveModal] = useState(null);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
 
@@ -238,7 +275,6 @@ const LearningPage = () => {
         Materi Pembelajaran
       </h2>
 
-      {/* --- INI PERUBAHAN UTAMA PADA LAYOUT --- */}
       <div className="flex flex-col gap-6">
         {materials.map((material, index) => {
           const materialProgress = enrollment?.progress.find(
@@ -288,4 +324,3 @@ const LearningPage = () => {
 };
 
 export default LearningPage;
-
