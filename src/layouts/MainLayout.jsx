@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'; // Import Suspense
+import React, { Suspense, useState } from 'react';
 import { useLocation, Outlet } from 'react-router-dom';
 import Navbar from '/src/components/Navbar.jsx';
 import Footer from '/src/components/Footer.jsx';
@@ -12,35 +12,42 @@ import AdminSidebar from '/src/components/admin/AdminSidebar.jsx';
 const MainLayout = () => {
   const { isModalOpen, modalView, closeModal } = useModalStore();
   const location = useLocation();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const isPanelPage =
     location.pathname.startsWith('/admin') ||
     location.pathname.startsWith('/instructor');
 
-  // UI Fallback untuk ditampilkan saat halaman sedang diunduh
   const pageLoadingFallback = (
     <div className="flex justify-center items-center h-full p-10">
       <p>Memuat...</p>
     </div>
   );
 
-  return (
-    <div className="flex flex-col min-h-screen bg-background">
-      <Navbar />
+  const toggleSidebar = (isOpen) => {
+    setIsSidebarOpen(isOpen);
+  };
 
-      <main className="flex-grow">
+  return (
+    <div className="flex flex-col min-h-screen bg-background relative">
+      {/* Navbar kirim toggleSidebar */}
+      <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+
+      <main className="flex-grow relative z-10">
         {isPanelPage ? (
-          <div className="container mx-auto flex gap-8 py-8 px-4 sm:px-6">
-            <AdminSidebar />
-            <div className="w-full">
-              {/* Bungkus Outlet dengan Suspense */}
+          <div className="container mx-auto flex flex-col md:flex-row gap-4 py-8 px-4 sm:px-6">
+            {/* Sidebar terima prop isOpen */}
+            <AdminSidebar
+              isOpen={isSidebarOpen}
+              toggleSidebar={toggleSidebar}
+            />
+            <div className="w-full md:ml-4">
               <Suspense fallback={pageLoadingFallback}>
                 <Outlet />
               </Suspense>
             </div>
           </div>
         ) : (
-          /* Bungkus Outlet dengan Suspense */
           <Suspense fallback={pageLoadingFallback}>
             <Outlet />
           </Suspense>
@@ -49,11 +56,22 @@ const MainLayout = () => {
 
       <Footer />
 
+      {/* Modal auth */}
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         {modalView === 'LOGIN' && <LoginPage />}
         {modalView === 'REGISTER' && <RegisterPage />}
         {modalView === 'FORGOT_PASSWORD' && <ForgotPasswordPage />}
       </Modal>
+
+      {/* Overlay sidebar di mobile */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-30 md:hidden"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) toggleSidebar(false);
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -1,58 +1,66 @@
-// src/pages/student/LearningPage.jsx
-
+/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useCourseDetail } from '/src/hooks/useCourses.js';
-// Kita akan import modal-modal di sini nanti
 import SubmissionModal from '/src/components/SubmissionModal.jsx';
 import TestModal from '../../components/TestModal.jsx';
 import ForumModal from '../../components/ForumModal.jsx';
 
-// Komponen untuk satu item materi
 const MaterialItem = ({ material, index, onButtonClick }) => {
-  // Cek apakah materi ini memiliki konten tes
   const hasTest = material.testContent && material.testContent.length > 0;
 
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
+    hover: { scale: 1.02, transition: { duration: 0.2 } },
+  };
+
   return (
-    <div className="p-5 border rounded-lg bg-white shadow-sm">
-      <h3 className="text-lg font-bold text-primary mb-2">
+    <motion.div
+      variants={cardVariants}
+      initial="hidden"
+      whileInView="visible"
+      whileHover="hover"
+      viewport={{ once: true }}
+      className="p-6 bg-white border border-gray-100 rounded-2xl shadow-sm transition-all duration-200"
+    >
+      <h3 className="text-lg font-semibold text-gray-900 font-sans mb-2">
         #{index + 1}: {material.title}
       </h3>
-      <p className="text-text-primary">{material.description}</p>
-
-      <div className="mt-4 flex flex-wrap gap-3">
+      <p
+        className="text-gray-600 leading-relaxed line-clamp-3"
+        dangerouslySetInnerHTML={{ __html: material.description }}
+      />
+      <div className="mt-5 flex flex-wrap gap-3">
         <button
           onClick={() => onButtonClick('assignment', material)}
-          className="bg-blue-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700"
+          className="px-4 py-2 bg-primary text-white text-sm font-medium rounded-xl hover:bg-opacity-90 transition-all duration-200"
         >
           Kumpulkan Tugas
         </button>
-
         {hasTest && (
           <button
             onClick={() => onButtonClick('test', material)}
-            className="bg-green-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-green-700"
+            className="px-4 py-2 bg-emerald-600 text-white text-sm font-medium rounded-xl hover:bg-emerald-700 transition-all duration-200"
           >
             Mulai Tes
           </button>
         )}
-
         <button
           onClick={() => onButtonClick('forum', material)}
-          className="bg-purple-600 text-white font-semibold py-2 px-4 rounded-md hover:bg-purple-700"
+          className="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-xl hover:bg-purple-700 transition-all duration-200"
         >
           Ikuti Diskusi
         </button>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
-// Komponen Halaman Utama
 const LearningPage = () => {
   const { courseSlug } = useParams();
   const { data, isLoading, isError } = useCourseDetail(courseSlug);
-
   const [activeModal, setActiveModal] = useState(null);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
 
@@ -66,43 +74,60 @@ const LearningPage = () => {
     setSelectedMaterial(null);
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { duration: 0.5, staggerChildren: 0.1 },
+    },
+  };
+
   if (isLoading) {
-    return <div className="text-center p-10">Memuat kursus...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen text-gray-600">
+        Memuat kursus...
+      </div>
+    );
   }
   if (isError) {
     return (
-      <div className="text-center p-10 text-red-500">Gagal memuat kursus.</div>
+      <div className="flex items-center justify-center min-h-screen text-red-500">
+        Gagal memuat kursus.
+      </div>
     );
   }
 
   const { course, materials } = data;
 
   return (
-    <>
-      <div className="container mx-auto p-8">
-        <h1 className="text-4xl font-bold text-text-primary">{course.title}</h1>
-        <p className="text-md text-text-muted mt-2">
+    <motion.div
+      className="container mx-auto px-4 sm:px-6 lg:px-8 py-12"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <div className="mb-8">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 font-sans leading-tight">
+          {course.title}
+        </h1>
+        <p className="text-gray-500 mt-2 text-sm sm:text-base">
           Oleh {course.instructorId?.name}
         </p>
-
-        <hr className="my-8" />
-
-        <h2 className="text-2xl font-bold text-text-primary mb-4">
-          Materi Pembelajaran
-        </h2>
-        <div className="space-y-4">
-          {materials.map((material, index) => (
-            <MaterialItem
-              key={material._id}
-              material={material}
-              index={index}
-              onButtonClick={handleOpenModal}
-            />
-          ))}
-        </div>
       </div>
-
-      {/* Kita akan mulai dengan Submission Modal */}
+      <hr className="my-8 border-gray-200" />
+      <h2 className="text-2xl font-semibold text-gray-900 font-sans mb-6">
+        Materi Pembelajaran
+      </h2>
+      <div className="grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+        {materials.map((material, index) => (
+          <MaterialItem
+            key={material._id}
+            material={material}
+            index={index}
+            onButtonClick={handleOpenModal}
+          />
+        ))}
+      </div>
       {selectedMaterial && (
         <>
           <SubmissionModal
@@ -125,7 +150,7 @@ const LearningPage = () => {
           />
         </>
       )}
-    </>
+    </motion.div>
   );
 };
 

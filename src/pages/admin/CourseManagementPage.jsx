@@ -13,15 +13,11 @@ const CourseManagementPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-  // --- LOGIKA BARU UNTUK MEMILIH HOOK ---
-  // Tentukan hook mana yang akan digunakan berdasarkan peran pengguna
   const { data: response, isLoading } = useAdminCourses({
     page,
     limit: 10,
     keyword: debouncedSearchTerm,
   });
-  // --- AKHIR LOGIKA BARU ---
-
   const { mutate: deleteCourse } = useDeleteCourse();
 
   const [modalState, setModalState] = useState({
@@ -35,10 +31,9 @@ const CourseManagementPage = () => {
   });
 
   const courses = response?.data?.data || [];
-  const totalCourses = response?.data?.total || response?.data?.count || 0;
+  const totalCourses = response?.data?.total || 0;
   const totalPages = Math.ceil(totalCourses / 10);
 
-  // Handlers (tidak ada perubahan)
   const handleOpenModal = (mode, course = null) =>
     setModalState({ isOpen: true, mode, currentCourse: course });
   const handleCloseModal = () =>
@@ -47,6 +42,7 @@ const CourseManagementPage = () => {
     setConfirmDeleteState({ isOpen: true, courseId });
   const closeDeleteConfirmation = () =>
     setConfirmDeleteState({ isOpen: false, courseId: null });
+
   const handleDelete = () => {
     deleteCourse(confirmDeleteState.courseId, {
       onSuccess: closeDeleteConfirmation,
@@ -54,14 +50,14 @@ const CourseManagementPage = () => {
   };
 
   return (
-    <>
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-text-primary">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 font-sans">
           Manajemen Kursus
         </h1>
         <button
           onClick={() => handleOpenModal('add')}
-          className="bg-primary text-white font-semibold px-4 py-2 rounded-md hover:opacity-90"
+          className="bg-primary text-white font-semibold px-4 py-2 rounded-xl hover:bg-opacity-90 transition-all duration-200"
         >
           + Tambah Kursus
         </button>
@@ -72,46 +68,68 @@ const CourseManagementPage = () => {
           placeholder="Cari berdasarkan judul atau deskripsi..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-4 py-2 border border-border rounded-md"
+          className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
         />
       </div>
-      <div className="bg-white p-4 rounded-lg shadow-md">
+      <div className="bg-white p-6 rounded-2xl shadow-md">
         {isLoading ? (
-          <p className="text-center p-4">Loading courses...</p>
+          <p className="text-center py-4 text-gray-600">Memuat kursus...</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left p-3 font-semibold">Thumbnail</th>
-                  <th className="text-left p-3 font-semibold">Judul</th>
-                  <th className="text-left p-3 font-semibold">Instruktur</th>
-                  <th className="text-left p-3 font-semibold">Aksi</th>
+              <thead className="hidden md:table-header-group">
+                <tr className="border-b border-gray-200">
+                  <th className="text-left p-3 font-semibold text-gray-700">
+                    Thumbnail
+                  </th>
+                  <th className="text-left p-3 font-semibold text-gray-700">
+                    Judul
+                  </th>
+                  <th className="text-left p-3 font-semibold text-gray-700">
+                    Instruktur
+                  </th>
+                  <th className="text-left p-3 font-semibold text-gray-700">
+                    Aksi
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {courses.map((course) => (
                   <tr
                     key={course._id}
-                    className="border-b border-border last:border-0 hover:bg-gray-50"
+                    className="block md:table-row mb-4 border border-gray-100 rounded-xl shadow-sm md:border-b md:rounded-none md:shadow-none hover:bg-gray-50 transition-all duration-200"
                   >
-                    <td className="p-3">
+                    <td className="p-3 block md:table-cell text-right md:text-left border-b md:border-none">
+                      <span className="font-semibold md:hidden text-gray-700 float-left">
+                        Thumbnail:
+                      </span>
                       <img
                         src={course.thumbnail}
                         alt={course.title}
-                        className="h-10 w-16 object-cover rounded"
+                        className="h-12 w-20 object-cover rounded-lg inline-block"
                       />
                     </td>
-                    <td className="p-3 font-medium">{course.title}</td>
-                    <td className="p-3">
+                    <td className="p-3 block md:table-cell text-right md:text-left border-b md:border-none">
+                      <span className="font-semibold md:hidden text-gray-700 float-left">
+                        Judul:
+                      </span>
+                      {course.title}
+                    </td>
+                    <td className="p-3 block md:table-cell text-right md:text-left border-b md:border-none">
+                      <span className="font-semibold md:hidden text-gray-700 float-left">
+                        Instruktur:
+                      </span>
                       {course.instructorId?.name || 'N/A'}
                     </td>
-                    <td className="p-3">
+                    <td className="p-3 block md:table-cell text-right md:text-left">
+                      <span className="font-semibold md:hidden text-gray-700 float-left">
+                        Aksi:
+                      </span>
                       {user?.role === 'instructor' && (
                         <Link
-                          to={`/instructor/courses/${
-                            course.slug || course._id
-                          }/enrollments`}
+                          to={`/${
+                            user?.role === 'admin' ? 'admin' : 'instructor'
+                          }/courses/${course.slug || course._id}/enrollments`}
                           className="text-purple-600 hover:underline mr-4 font-medium"
                         >
                           Pendaftar
@@ -149,10 +167,10 @@ const CourseManagementPage = () => {
             currentPage={page}
             totalPages={totalPages}
             onPageChange={(p) => setPage(p)}
+            className="mt-6"
           />
         )}
       </div>
-
       <CourseFormModal
         isOpen={modalState.isOpen}
         onClose={handleCloseModal}
@@ -165,7 +183,7 @@ const CourseManagementPage = () => {
         onConfirm={handleDelete}
         message="Apakah Anda yakin ingin menghapus kursus ini? Semua materi terkait akan ikut terhapus."
       />
-    </>
+    </div>
   );
 };
 

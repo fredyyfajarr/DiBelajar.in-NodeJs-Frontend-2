@@ -1,9 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
-import { useCourses, useSearchCourses } from '/src/hooks/useCourses.js';
+// Ganti dua hook lama dengan satu hook yang sudah disempurnakan
+import { useCourses } from '/src/hooks/useCourses.js';
+
 import CourseCard from '/src/components/CourseCard.jsx';
 import HeroSection from '/src/components/HeroSection.jsx';
 import FeaturesSection from '/src/components/FeaturesSection.jsx';
@@ -25,16 +27,16 @@ const LandingPage = () => {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q');
 
-  // Hook untuk semua kursus, hanya aktif jika TIDAK ada query pencarian
-  const { data: allCourses, isLoading: isLoadingAll } = useCourses(!query);
+  // --- PERUBAHAN UTAMA PADA CARA MENGAMBIL DATA ---
+  // Gunakan satu hook 'useCourses' dan berikan parameter 'limit' untuk membatasi jumlah
+  const { data: response, isLoading } = useCourses({
+    limit: 8, // Hanya tampilkan maksimal 8 kursus
+    keyword: query, // Tetap dukung fungsionalitas pencarian
+  });
 
-  // Hook untuk kursus hasil pencarian, hanya aktif JIKA ADA query pencarian
-  const { data: searchedCourses, isLoading: isLoadingSearch } =
-    useSearchCourses(query);
-
-  // Tentukan data mana yang akan ditampilkan dan status loadingnya
-  const isLoading = query ? isLoadingSearch : isLoadingAll;
-  const courses = query ? searchedCourses : allCourses;
+  // Sesuaikan cara mengekstrak data kursus dari respons API
+  const courses = response?.data || [];
+  // ---------------------------------------------
 
   const renderTitle = () => {
     if (query) {
@@ -46,16 +48,17 @@ const LandingPage = () => {
     }
     return (
       <h2 className="text-3xl font-bold text-gray-800 mb-8">
-        Berbagai Pilihan Kursus untuk Anda
+        Kursus Populer Pilihan
       </h2>
     );
   };
 
   const renderContent = () => {
-    if (isLoading) {
-      return <p className="text-center text-text-muted">Loading courses...</p>;
+    // Tampilkan loading state jika data belum ada sama sekali
+    if (isLoading && courses.length === 0) {
+      return <p className="text-center text-text-muted">Memuat kursus...</p>;
     }
-    if (courses?.length === 0) {
+    if (courses.length === 0) {
       return (
         <p className="text-center text-text-muted">
           Tidak ada hasil yang ditemukan.
@@ -69,7 +72,7 @@ const LandingPage = () => {
         initial="hidden"
         animate="visible"
       >
-        {courses?.map((course) => (
+        {courses.map((course) => (
           <CourseCard key={course._id} course={course} />
         ))}
       </motion.div>
@@ -84,7 +87,22 @@ const LandingPage = () => {
       <div className="container mx-auto px-4 sm:px-6 py-12">
         {renderTitle()}
         {renderContent()}
+
+        {/* --- TOMBOL BARU UNTUK MELIHAT SEMUA KURSUS --- */}
+        {/* Tampilkan tombol ini hanya jika bukan halaman hasil pencarian */}
+        {!query && courses.length > 0 && (
+          <div className="text-center mt-12">
+            <Link
+              to="/courses"
+              className="bg-primary text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:scale-105 transform transition-transform duration-300"
+            >
+              Lihat Semua Kursus
+            </Link>
+          </div>
+        )}
+        {/* ------------------------------------------- */}
       </div>
+
       <CategoriesSection />
       <TestimonialsSection />
       <CTASection />

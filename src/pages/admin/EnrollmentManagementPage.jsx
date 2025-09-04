@@ -17,46 +17,48 @@ const EnrollmentManagementPage = () => {
   const totalEnrollments = response?.data?.total || 0;
   const totalPages = Math.ceil(totalEnrollments / 10);
 
-  const openDeleteConfirmation = (enrollmentData) => {
+  const openDeleteConfirmation = (enrollmentData) =>
     setConfirmDeleteState({ isOpen: true, data: enrollmentData });
-  };
-
-  const closeDeleteConfirmation = () => {
+  const closeDeleteConfirmation = () =>
     setConfirmDeleteState({ isOpen: false, data: null });
-  };
 
   const handleDelete = () => {
     if (confirmDeleteState.data) {
       const { userId, courseId } = confirmDeleteState.data;
       deleteEnrollment(
         { userId: userId._id, courseId: courseId._id },
-        {
-          onSuccess: closeDeleteConfirmation,
-        }
+        { onSuccess: closeDeleteConfirmation }
       );
     }
   };
 
   return (
-    <>
-      <h1 className="text-3xl font-bold text-text-primary mb-6">
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 font-sans mb-6">
         Manajemen Pendaftaran
       </h1>
-
-      <div className="bg-white p-4 rounded-lg shadow-md">
+      <div className="bg-white p-6 rounded-2xl shadow-md">
         {isLoading ? (
-          <p className="text-center p-4">Loading enrollments...</p>
+          <p className="text-center py-4 text-gray-600">
+            Memuat pendaftaran...
+          </p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left p-3 font-semibold">Nama Pengguna</th>
-                  <th className="text-left p-3 font-semibold">
+              <thead className="hidden md:table-header-group">
+                <tr className="border-b border-gray-200">
+                  <th className="text-left p-3 font-semibold text-gray-700">
+                    Nama Pengguna
+                  </th>
+                  <th className="text-left p-3 font-semibold text-gray-700">
                     Email Pengguna
                   </th>
-                  <th className="text-left p-3 font-semibold">Nama Kursus</th>
-                  <th className="text-left p-3 font-semibold">Aksi</th>
+                  <th className="text-left p-3 font-semibold text-gray-700">
+                    Nama Kursus
+                  </th>
+                  <th className="text-left p-3 font-semibold text-gray-700">
+                    Aksi
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -64,18 +66,30 @@ const EnrollmentManagementPage = () => {
                   enrollments.map((enrollment) => (
                     <tr
                       key={enrollment._id}
-                      className="border-b border-border last:border-0 hover:bg-gray-50"
+                      className="block md:table-row mb-4 border border-gray-100 rounded-xl shadow-sm md:border-b md:rounded-none md:shadow-none hover:bg-gray-50 transition-all duration-200"
                     >
-                      <td className="p-3">
+                      <td className="p-3 block md:table-cell text-right md:text-left border-b md:border-none">
+                        <span className="font-semibold md:hidden text-gray-700 float-left">
+                          Nama:
+                        </span>
                         {enrollment.userId?.name || 'Pengguna Dihapus'}
                       </td>
-                      <td className="p-3">
+                      <td className="p-3 block md:table-cell text-right md:text-left border-b md:border-none">
+                        <span className="font-semibold md:hidden text-gray-700 float-left">
+                          Email:
+                        </span>
                         {enrollment.userId?.email || 'N/A'}
                       </td>
-                      <td className="p-3 font-medium">
+                      <td className="p-3 block md:table-cell text-right md:text-left border-b md:border-none">
+                        <span className="font-semibold md:hidden text-gray-700 float-left">
+                          Kursus:
+                        </span>
                         {enrollment.courseId?.title || 'Kursus Dihapus'}
                       </td>
-                      <td className="p-3">
+                      <td className="p-3 block md:table-cell text-right md:text-left">
+                        <span className="font-semibold md:hidden text-gray-700 float-left">
+                          Aksi:
+                        </span>
                         <button
                           onClick={() => openDeleteConfirmation(enrollment)}
                           className="text-red-600 hover:underline font-medium"
@@ -87,7 +101,7 @@ const EnrollmentManagementPage = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="4" className="text-center p-4 text-text-muted">
+                    <td colSpan="4" className="text-center p-4 text-gray-600">
                       Belum ada data pendaftaran.
                     </td>
                   </tr>
@@ -101,17 +115,17 @@ const EnrollmentManagementPage = () => {
             currentPage={page}
             totalPages={totalPages}
             onPageChange={(p) => setPage(p)}
+            className="mt-6"
           />
         )}
       </div>
-
       <ConfirmationModal
         isOpen={confirmDeleteState.isOpen}
         onClose={closeDeleteConfirmation}
         onConfirm={handleDelete}
         message={`Apakah Anda yakin ingin membatalkan pendaftaran "${confirmDeleteState.data?.userId?.name}" dari kursus "${confirmDeleteState.data?.courseId?.title}"?`}
       />
-    </>
+    </div>
   );
 };
 

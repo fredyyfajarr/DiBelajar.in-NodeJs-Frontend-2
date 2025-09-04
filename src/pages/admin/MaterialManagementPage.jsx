@@ -7,7 +7,7 @@ import ConfirmationModal from '/src/components/ConfirmationModal.jsx';
 
 const MaterialManagementPage = () => {
   const { courseId } = useParams();
-  const { user } = useAuthStore(); // Mengambil info user yang login
+  const { user } = useAuthStore();
 
   const [modalState, setModalState] = useState({
     isOpen: false,
@@ -28,64 +28,63 @@ const MaterialManagementPage = () => {
       ? materials[0].courseId?.title
       : 'Memuat Nama Kursus...';
 
-  // Tentukan path dasar dinamis berdasarkan role user
   const basePath =
     user?.role === 'admin' ? '/admin/courses' : '/instructor/courses';
 
-  // Handlers untuk modal
   const handleOpenModal = (mode, material = null) =>
     setModalState({ isOpen: true, mode, currentMaterial: material });
-
   const handleCloseModal = () =>
     setModalState({ isOpen: false, mode: null, currentMaterial: null });
-
   const openDeleteConfirmation = (materialId) =>
     setConfirmDeleteState({ isOpen: true, materialId });
-
   const closeDeleteConfirmation = () =>
     setConfirmDeleteState({ isOpen: false, materialId: null });
 
   const handleDelete = () => {
     deleteMaterial(
       { courseId, materialId: confirmDeleteState.materialId },
-      {
-        onSuccess: closeDeleteConfirmation,
-      }
+      { onSuccess: closeDeleteConfirmation }
     );
   };
 
   return (
-    <>
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-6">
-        {/* Menggunakan basePath dinamis untuk link "Kembali" */}
-        <Link to={basePath} className="text-sm text-primary hover:underline">
+        <Link
+          to={basePath}
+          className="text-sm text-primary hover:underline mb-2 inline-block"
+        >
           &larr; Kembali ke Daftar Kursus
         </Link>
-        <h1 className="text-3xl font-bold text-text-primary mt-2">
+        <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 font-sans mt-2">
           Manajemen Materi: <span className="font-normal">{courseTitle}</span>
         </h1>
       </div>
-
       <div className="flex justify-end mb-4">
         <button
           onClick={() => handleOpenModal('add')}
-          className="bg-primary text-white font-semibold px-4 py-2 rounded-md hover:opacity-90"
+          className="bg-primary text-white font-semibold px-4 py-2 rounded-xl hover:bg-opacity-90 transition-all duration-200"
         >
           + Tambah Materi
         </button>
       </div>
-
-      <div className="bg-white p-4 rounded-lg shadow-md">
+      <div className="bg-white p-6 rounded-2xl shadow-md">
         {isLoading ? (
-          <p className="text-center p-4">Memuat materi...</p>
+          <p className="text-center py-4 text-gray-600">Memuat materi...</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left p-3 font-semibold">Judul Materi</th>
-                  <th className="text-left p-3 font-semibold">Deskripsi</th>
-                  <th className="text-left p-3 font-semibold">Aksi</th>
+                <tr className="border-b border-gray-200">
+                  <th className="text-left p-3 font-semibold text-gray-700">
+                    Judul Materi
+                  </th>
+                  <th className="text-left p-3 font-semibold text-gray-700">
+                    Deskripsi
+                  </th>
+                  <th className="text-left p-3 font-semibold text-gray-700">
+                    Aksi
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -93,14 +92,15 @@ const MaterialManagementPage = () => {
                   materials.map((material) => (
                     <tr
                       key={material._id}
-                      className="border-b border-border last:border-0 hover:bg-gray-50"
+                      className="border-b border-gray-100 last:border-0 hover:bg-gray-50 transition-colors duration-200"
                     >
-                      <td className="p-3 font-medium">{material.title}</td>
-                      <td className="p-3 text-sm text-text-muted">
+                      <td className="p-3 font-medium text-gray-900">
+                        {material.title}
+                      </td>
+                      <td className="p-3 text-sm text-gray-600">
                         {material.description.substring(0, 70)}...
                       </td>
                       <td className="p-3">
-                        {/* Tautan "Detail" dinamis berdasarkan basePath */}
                         <Link
                           to={`${basePath}/${courseId}/materials/${
                             material.slug || material._id
@@ -126,7 +126,7 @@ const MaterialManagementPage = () => {
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="3" className="text-center p-4 text-text-muted">
+                    <td colSpan="3" className="text-center p-4 text-gray-600">
                       Belum ada materi untuk kursus ini.
                     </td>
                   </tr>
@@ -136,8 +136,6 @@ const MaterialManagementPage = () => {
           </div>
         )}
       </div>
-
-      {/* Komponen Modal untuk Tambah/Edit Materi */}
       <MaterialFormModal
         isOpen={modalState.isOpen}
         onClose={handleCloseModal}
@@ -145,15 +143,13 @@ const MaterialManagementPage = () => {
         currentMaterial={modalState.currentMaterial}
         courseId={courseId}
       />
-
-      {/* Komponen Modal untuk Konfirmasi Hapus */}
       <ConfirmationModal
         isOpen={confirmDeleteState.isOpen}
         onClose={closeDeleteConfirmation}
         onConfirm={handleDelete}
         message="Apakah Anda yakin ingin menghapus materi ini?"
       />
-    </>
+    </div>
   );
 };
 

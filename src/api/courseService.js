@@ -3,9 +3,9 @@ import axiosInstance from './axiosInstance.js';
 /**
  * Mengambil semua kursus (untuk landing page)
  */
-const getAll = async () => {
-  const response = await axiosInstance.get('/courses');
-  return response.data.data;
+const getAll = async (params = {}) => {
+  const response = await axiosInstance.get('/courses', { params });
+  return response.data; // Mengembalikan seluruh objek respons { success, data, pagination, ... }
 };
 
 /**

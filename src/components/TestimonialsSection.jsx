@@ -1,17 +1,17 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
+import { motion } from 'framer-motion';
 
-// Data testimoni palsu
 const testimonials = [
   {
     quote:
-      'Materi yang diajarkan sangat relevan dengan industri saat ini. Saya berhasil mendapatkan pekerjaan pertama saya sebagai web developer berkat DiBelajar.in!',
+      'Materi sangat relevan, membantu saya menjadi web developer di TechCorp!',
     name: 'Ahmad Subarjo',
-    role: 'Web Developer di TechCorp',
+    role: 'Web Developer',
     avatar: 'https://placehold.co/100x100/E2E8F0/475569?text=AS',
   },
   {
-    quote:
-      'Sebagai seorang desainer, saya sangat terbantu dengan kursus-kursus di sini. Penjelasannya mudah dipahami bahkan untuk pemula. Highly recommended!',
+    quote: 'Kursus desainnya luar biasa, sangat membantu pemula seperti saya!',
     name: 'Siti Aminah',
     role: 'UI/UX Designer',
     avatar: 'https://placehold.co/100x100/E2E8F0/475569?text=SA',
@@ -19,40 +19,60 @@ const testimonials = [
 ];
 
 const TestimonialsSection = () => {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.2 },
+    },
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, x: -50 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.5 } },
+  };
+
   return (
-    <div className="bg-white py-16 sm:py-20">
+    <div className="bg-gray-50 py-20">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center">
-          <h2 className="text-3xl font-bold text-text-primary">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
             Apa Kata Mereka?
           </h2>
-          <p className="mt-2 text-lg text-text-muted">
-            Cerita sukses dari para pelajar kami.
+          <p className="text-lg text-gray-600 max-w-xl mx-auto">
+            Pengalaman nyata dari pelajar kami.
           </p>
         </div>
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
-          {testimonials.map((testimonial) => (
-            <div
-              key={testimonial.name}
-              className="bg-background p-8 rounded-lg border border-border"
+        <motion.div
+          className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          {testimonials.map((testimonial, index) => (
+            <motion.div
+              key={index}
+              variants={cardVariants}
+              className="bg-white p-6 rounded-2xl border border-gray-100 shadow-md hover:shadow-lg transition-shadow duration-300"
             >
-              <p className="text-text-muted italic">"{testimonial.quote}"</p>
-              <div className="mt-4 flex items-center">
+              <p className="text-gray-600 italic mb-4">"{testimonial.quote}"</p>
+              <div className="flex items-center">
                 <img
                   src={testimonial.avatar}
                   alt={testimonial.name}
-                  className="w-12 h-12 rounded-full"
+                  className="w-12 h-12 rounded-full object-cover"
                 />
                 <div className="ml-4">
-                  <p className="font-semibold text-text-primary">
+                  <p className="font-semibold text-gray-900">
                     {testimonial.name}
                   </p>
-                  <p className="text-sm text-text-muted">{testimonial.role}</p>
+                  <p className="text-sm text-gray-600">{testimonial.role}</p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
     </div>
   );

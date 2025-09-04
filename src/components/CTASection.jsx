@@ -1,27 +1,39 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import useModalStore from '/src/store/modalStore';
+import { motion } from 'framer-motion';
 
 const CTASection = () => {
   const { openModal } = useModalStore();
 
+  const buttonVariants = {
+    hover: { scale: 1.05, transition: { duration: 0.3 } },
+    tap: { scale: 0.95 },
+    animate: {
+      scale: [1, 1.02, 1],
+      transition: { duration: 1.5, repeat: Infinity, repeatType: 'mirror' },
+    },
+  };
+
   return (
-    <div className="bg-primary">
+    <div className="bg-purple-900">
       <div className="container mx-auto px-4 sm:px-6 py-16 text-center">
-        <h2 className="text-3xl font-bold text-white">
+        <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
           Siap untuk Mulai Belajar?
         </h2>
-        <p className="mt-2 text-lg text-indigo-200 max-w-2xl mx-auto">
-          Buat akun gratis Anda sekarang dan dapatkan akses ke semua kursus kami
-          selamanya.
+        <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-8">
+          Buat akun gratis sekarang dan akses semua kursus kami selamanya.
         </p>
-        <div className="mt-8">
-          <button
-            onClick={() => openModal('REGISTER')}
-            className="bg-white text-primary font-semibold py-3 px-8 rounded-lg shadow-lg hover:scale-105 transform transition-transform duration-300"
-          >
-            Daftar Gratis
-          </button>
-        </div>
+        <motion.button
+          variants={buttonVariants}
+          whileHover="hover"
+          whileTap="tap"
+          animate="animate"
+          onClick={() => openModal('REGISTER')}
+          className="bg-white text-primary font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-opacity-90 transition-all duration-300"
+        >
+          Daftar Gratis
+        </motion.button>
       </div>
     </div>
   );

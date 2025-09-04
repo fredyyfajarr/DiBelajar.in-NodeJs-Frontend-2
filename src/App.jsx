@@ -1,4 +1,4 @@
-import React from 'react'; // Hapus 'Suspense' dari sini
+import React, { Suspense } from 'react'; // Pastikan Suspense di-import
 import {
   BrowserRouter as Router,
   Routes,
@@ -11,8 +11,11 @@ import MainLayout from '/src/layouts/MainLayout.jsx';
 import ProtectedRoute from '/src/components/ProtectedRoute.jsx';
 import RoleBasedRoute from '/src/components/RoleBasedRoute.jsx';
 
-// Semua halaman tetap di-import menggunakan React.lazy
+// Halaman-halaman di-import menggunakan React.lazy
 const LandingPage = React.lazy(() => import('/src/pages/LandingPage.jsx'));
+const AllCoursesPage = React.lazy(() =>
+  import('/src/pages/AllCoursesPage.jsx')
+); // <-- 1. IMPORT HALAMAN BARU
 const CourseDetailPage = React.lazy(() =>
   import('/src/pages/CourseDetailPage.jsx')
 );
@@ -49,13 +52,14 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Suspense sudah dihapus dari sini */}
         <Route element={<MainLayout />}>
+          {/* MainLayout akan menangani Suspense fallback */}
           {/* Rute Publik */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/search" element={<LandingPage />} />
+          <Route path="/courses" element={<AllCoursesPage />} />{' '}
+          {/* <-- 2. TAMBAHKAN RUTE BARU */}
           <Route path="/courses/:courseSlug" element={<CourseDetailPage />} />
-
           {/* Rute Terproteksi */}
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<DashboardPage />} />

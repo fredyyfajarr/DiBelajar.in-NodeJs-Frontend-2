@@ -1,7 +1,7 @@
-// src/pages/CourseDetailPage.jsx
-
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useCourseDetail } from '/src/hooks/useCourses.js';
 import { useEnrollInCourse } from '/src/hooks/useStudent.js';
 import useAuthStore from '/src/store/authStore.js';
@@ -14,120 +14,142 @@ const CourseDetailPage = () => {
   const { openModal } = useModalStore();
   const { mutate: enroll, isPending: isEnrolling } = useEnrollInCourse();
 
-  // 1. Tampilkan status loading
   if (isLoading) {
-    return <div className="text-center p-10">Memuat detail kursus...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen text-gray-600">
+        Memuat detail kursus...
+      </div>
+    );
   }
 
-  // 2. Tampilkan pesan error jika request gagal
   if (isError) {
     return (
-      <div className="text-center p-10 text-red-500">
+      <div className="flex items-center justify-center min-h-screen text-red-500">
         Gagal memuat kursus. Silakan coba lagi.
       </div>
     );
   }
 
-  // 3. Destructure data HANYA SETELAH kita yakin tidak ada error dan tidak sedang loading
   const { course, materials } = data;
-
   const materialsToShow = isAuthenticated ? materials : materials.slice(0, 3);
 
   const handleEnrollClick = () => {
     enroll(course.slug || course._id);
   };
 
-  // 4. Render halaman jika semua data aman
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { duration: 0.5 } },
+  };
+
+  const buttonVariants = {
+    hover: { scale: 1.05, transition: { duration: 0.3 } },
+    tap: { scale: 0.95 },
+  };
+
   return (
-    <div className="container mx-auto p-4 sm:p-8">
+    <motion.div
+      className="container mx-auto px-4 sm:px-6 lg:px-8 py-12"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Kolom Konten Utama */}
         <div className="lg:col-span-2">
-          <h1 className="text-3xl sm:text-4xl font-bold text-text-primary">
+          <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 font-sans leading-tight">
             {course.title}
           </h1>
-          <p className="text-md text-text-muted mt-2">
+          <p className="text-gray-500 mt-2 text-sm sm:text-base">
             Oleh {course.instructorId?.name || 'Instruktur Ahli'}
           </p>
-          <p className="mt-6 text-text-primary leading-relaxed">
-            {course.description}
-          </p>
-
-          <hr className="my-8 border-border" />
-
-          <h2 className="text-2xl font-bold text-text-primary mb-4">
+          <p
+            className="mt-6 text-gray-600 leading-relaxed line-clamp-4"
+            dangerouslySetInnerHTML={{ __html: course.description }}
+          />
+          <hr className="my-8 border-gray-200" />
+          <h2 className="text-2xl font-semibold text-gray-900 mb-6 font-sans">
             Materi Kursus
           </h2>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {materialsToShow.map((material, index) => (
               <div
                 key={material._id}
-                className="p-4 border border-border rounded-md bg-gray-50 flex items-center"
+                className="p-5 bg-gray-50 border border-gray-100 rounded-2xl flex items-center shadow-sm hover:shadow-md transition-shadow duration-300"
               >
-                <span className="text-lg font-bold text-primary mr-4">
+                <span className="text-lg font-semibold text-primary mr-4">
                   {index + 1}
                 </span>
                 <div>
-                  <h3 className="font-semibold text-text-primary">
+                  <h3 className="font-semibold text-gray-900">
                     {material.title}
                   </h3>
-                  <p className="text-sm text-text-muted">
+                  <p className="text-sm text-gray-600">
                     {material.description.substring(0, 100)}...
                   </p>
                 </div>
               </div>
             ))}
           </div>
-
           {!isAuthenticated && materials.length > 3 && (
-            <div className="mt-6 text-center p-6 bg-background rounded-lg border-2 border-dashed border-border">
-              <h3 className="font-semibold text-text-primary">
+            <motion.div
+              className="mt-6 text-center p-6 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200 shadow-sm"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+            >
+              <h3 className="font-semibold text-gray-900 font-sans">
                 Ingin lihat lebih lanjut?
               </h3>
-              <p className="text-text-muted">
+              <p className="text-gray-600 mt-2">
                 Daftar atau login untuk melihat semua materi dan mendaftar di
                 kursus ini.
               </p>
-              <button
+              <motion.button
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
                 onClick={() => openModal('LOGIN')}
-                className="mt-4 bg-primary text-white font-semibold py-2 px-6 rounded-md hover:opacity-90"
+                className="mt-4 px-6 py-2 bg-primary text-white text-sm font-medium rounded-xl hover:bg-opacity-90 transition-all duration-200"
               >
                 Login atau Daftar
-              </button>
-            </div>
+              </motion.button>
+            </motion.div>
           )}
         </div>
-
-        {/* Kolom Sidebar */}
         <div className="lg:col-span-1">
-          <div className="bg-white p-6 rounded-lg shadow-md sticky top-24">
+          <div className="bg-white p-6 rounded-2xl shadow-md sticky top-24">
             <img
               src={course.thumbnail}
               alt={course.title}
-              className="w-full h-40 object-cover rounded-md mb-4"
+              className="w-full h-48 object-cover rounded-xl mb-4"
             />
-            <span className="text-2xl font-bold text-text-primary">GRATIS</span>
-
+            <span className="text-2xl font-bold text-gray-900">GRATIS</span>
             {isAuthenticated ? (
-              <button
+              <motion.button
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
                 onClick={handleEnrollClick}
                 disabled={isEnrolling}
-                className="mt-4 w-full bg-secondary text-white font-bold py-3 rounded-md hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="mt-4 w-full px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isEnrolling ? 'Mendaftarkan...' : 'Daftar ke Kursus Ini'}
-              </button>
+              </motion.button>
             ) : (
-              <button
+              <motion.button
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
                 onClick={() => openModal('LOGIN')}
-                className="mt-4 w-full bg-secondary text-white font-bold py-3 rounded-md hover:opacity-90"
+                className="mt-4 w-full px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-opacity-90 transition-all duration-200"
               >
                 Login untuk Mendaftar
-              </button>
+              </motion.button>
             )}
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

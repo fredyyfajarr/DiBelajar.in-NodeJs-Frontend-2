@@ -2,14 +2,15 @@ import { useQuery } from '@tanstack/react-query';
 import courseService from '/src/api/courseService.js';
 
 /**
- * Hook untuk mengambil SEMUA kursus.
- * @param {boolean} enabled - Apakah hook ini harus aktif atau tidak.
+ * Hook untuk mengambil data kursus dengan dukungan parameter (paginasi, filter, search).
+ * @param {object} params - Objek parameter query, contoh: { page: 1, limit: 8, keyword: 'react' }
  */
-export const useCourses = (enabled = true) => {
+export const useCourses = (params) => {
   return useQuery({
-    queryKey: ['courses', 'all'],
-    queryFn: courseService.getAll,
-    enabled, // Hanya akan fetch data jika 'enabled' bernilai true
+    // Query key sekarang menyertakan params agar data di-cache secara unik
+    queryKey: ['courses', params],
+    queryFn: () => courseService.getAll(params),
+    keepPreviousData: true, // Fitur bagus untuk paginasi agar data lama tidak hilang saat memuat halaman baru
   });
 };
 
