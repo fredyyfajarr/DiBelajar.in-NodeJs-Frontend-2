@@ -97,9 +97,12 @@ const MaterialManagementPage = () => {
                       <td className="p-3 font-medium text-gray-900">
                         {material.title}
                       </td>
-                      <td className="p-3 text-sm text-gray-600">
-                        {material.description.substring(0, 70)}...
-                      </td>
+                      <td
+                        className="p-3 text-sm text-gray-600"
+                        dangerouslySetInnerHTML={{
+                          __html: material.description.substring(0, 70),
+                        }}
+                      />
                       <td className="p-3">
                         <Link
                           to={`${basePath}/${courseId}/materials/${

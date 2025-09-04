@@ -22,3 +22,7 @@
   --color-text-muted: #64748b;
   --color-border: #e2e8f0;
 }
+
+.fr-box .fr-wrapper + div a {
+  display: none !important;
+}

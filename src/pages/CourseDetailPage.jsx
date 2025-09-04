@@ -83,9 +83,12 @@ const CourseDetailPage = () => {
                   <h3 className="font-semibold text-gray-900">
                     {material.title}
                   </h3>
-                  <p className="text-sm text-gray-600">
-                    {material.description.substring(0, 100)}...
-                  </p>
+                  <p
+                    className="text-sm text-gray-600"
+                    dangerouslySetInnerHTML={{
+                      __html: material.description.substring(0, 100),
+                    }}
+                  />
                 </div>
               </div>
             ))}

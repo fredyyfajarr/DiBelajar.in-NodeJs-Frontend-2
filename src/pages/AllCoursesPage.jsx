@@ -4,10 +4,12 @@ import { motion } from 'framer-motion';
 import { useCourses } from '/src/hooks/useCourses.js';
 import CourseCard from '/src/components/CourseCard.jsx';
 import Pagination from '/src/components/Pagination.jsx';
+import Skeleton from 'react-loading-skeleton'; // Impor Skeleton
+import 'react-loading-skeleton/dist/skeleton.css'; // Impor CSS Skeleton
 
 const AllCoursesPage = () => {
   const [page, setPage] = useState(1);
-  const coursesPerPage = 10; // Tentukan berapa banyak kursus per halaman
+  const coursesPerPage = 8;
 
   const { data: response, isLoading } = useCourses({
     page,
@@ -34,9 +36,24 @@ const AllCoursesPage = () => {
   const renderContent = () => {
     if (isLoading && courses.length === 0) {
       return (
-        <p className="text-center py-12 text-gray-600 col-span-full">
-          Memuat kursus...
-        </p>
+        <motion.div
+          className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {Array(coursesPerPage)
+            .fill()
+            .map((_, index) => (
+              <motion.div
+                key={index}
+                variants={cardVariants}
+                className="w-full"
+              >
+                <Skeleton height={250} className="rounded-2xl" />
+              </motion.div>
+            ))}
+        </motion.div>
       );
     }
     if (courses.length === 0) {
