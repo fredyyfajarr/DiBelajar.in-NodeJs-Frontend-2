@@ -52,11 +52,14 @@ export const useSubmitTestResult = () => {
 };
 
 export const useUpdateProgress = () => {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient(); // Pastikan useQueryClient diimpor
   return useMutation({
     mutationFn: studentService.updateProgress,
     onSuccess: (data, variables) => {
-      // Invalidate query course detail untuk me-refetch data progress
+      // Baris ini adalah kuncinya.
+    // 'variables.corseSlug' berasal dari data yang kita kirim saat memanggil mutate.
+      // Ini memberitahu React Query bahwa data untuk 'course' dengan slug ini sudah usang
+      // dan perlu diambil ulang.
       queryClient.invalidateQueries({
         queryKey: ['course', variables.courseSlug],
       });
