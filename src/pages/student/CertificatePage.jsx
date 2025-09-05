@@ -26,19 +26,6 @@ const CertificatePage = () => {
           size: A4 landscape;
           margin: 0 !important;
         }
-          @media (max-width: 767px) {
-          .certificate-container {
-            width: 100vw !important;
-            height: 100vh !important;
-            transform: none !important;
-            left: 0 !important;
-          }
-          .certificate-container img {
-            width: 100% !important;
-            height: auto !important;
-            object-fit: contain !important;
-          }
-        }
         
         body {
           -webkit-print-color-adjust: exact !important;
@@ -72,6 +59,22 @@ const CertificatePage = () => {
           display: none !important;
         }
       }
+
+      @media print and (max-width: 768px) {
+      .certificate-container {
+        position: relative !important;
+        width: 100% !important;
+        height: auto !important;
+        aspect-ratio: 1123 / 794;
+        left: 0 !important;
+        transform: none !important;
+      }
+
+      .certificate-container img {
+        width: 100% !important;
+        height: auto !important;
+      }
+}
     `;
     document.head.appendChild(style);
 
