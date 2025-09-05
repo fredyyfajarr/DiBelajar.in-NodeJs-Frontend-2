@@ -296,7 +296,7 @@ const LearningPage = () => {
       <div className="flex flex-col gap-6">
         {materials.map((material, index) => {
           const materialProgress = enrollment?.progress.find(
-            (p) => p.materialId === material._id
+            (p) => p.materialId.toString() === material._id.toString()
           );
           return (
             <MaterialItem

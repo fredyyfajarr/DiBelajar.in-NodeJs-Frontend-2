@@ -140,6 +140,7 @@ const MaterialManagementPage = () => {
         )}
       </div>
       <MaterialFormModal
+        key={modalState.mode + (modalState.currentMaterial?._id || 'new')}
         isOpen={modalState.isOpen}
         onClose={handleCloseModal}
         mode={modalState.mode}
