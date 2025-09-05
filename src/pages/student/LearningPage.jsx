@@ -75,9 +75,9 @@ const MaterialItem = ({
   courseId,
   courseSlug,
 }) => {
-  // DEBUG 3: Tampilkan data material dan progress yang diterima komponen ini
-  console.log(`[MaterialItem #${index + 1}] Data Material:`, material);
-  console.log(`[MaterialItem #${index + 1}] Data Progress Diterima:`, progress);
+  // // DEBUG 3: Tampilkan data material dan progress yang diterima komponen ini
+  // console.log(`[MaterialItem #${index + 1}] Data Material:`, material);
+  // console.log(`[MaterialItem #${index + 1}] Data Progress Diterima:`, progress);
 
   const testCompleted = progress?.hasCompletedTest || false;
   const assignmentSubmitted = progress?.hasSubmittedAssignment || false;
@@ -86,13 +86,13 @@ const MaterialItem = ({
   const hasTest = material.testContent && material.testContent.length > 0;
 
   // DEBUG 4: Tampilkan hasil kalkulasi status progres
-  console.log(`[MaterialItem #${index + 1}] Status Kalkulasi:`, {
-    hasTest,
-    testCompleted,
-    assignmentSubmitted,
-    forumPostCount,
-    materialCompleted,
-  });
+  // console.log(`[MaterialItem #${index + 1}] Status Kalkulasi:`, {
+  //   hasTest,
+  //   testCompleted,
+  //   assignmentSubmitted,
+  //   forumPostCount,
+  //   materialCompleted,
+  // });
 
   const { mutate: updateProgress } = useUpdateProgress();
   const handleCompleteMaterial = () => {
@@ -227,13 +227,13 @@ const LearningPage = () => {
   const [selectedMaterial, setSelectedMaterial] = useState(null);
 
   // DEBUG 1: Tampilkan data mentah dari API
-  useEffect(() => {
-    if (data) {
-      console.log('========================================');
-      console.log('DEBUG 1: Data mentah dari hook useCourseDetail:', data);
-      console.log('========================================');
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data) {
+  //     console.log('========================================');
+  //     console.log('DEBUG 1: Data mentah dari hook useCourseDetail:', data);
+  //     console.log('========================================');
+  //   }
+  // }, [data]);
 
   const handleOpenModal = (modalType, material) => {
     setSelectedMaterial(material);
@@ -268,11 +268,11 @@ const LearningPage = () => {
   const { course, materials, enrollment } = data;
 
   // DEBUG 2: Tampilkan data setelah di-destructure
-  console.log('DEBUG 2: Data setelah di-destructure:', {
-    course,
-    materials,
-    enrollment,
-  });
+  // console.log('DEBUG 2: Data setelah di-destructure:', {
+  //   course,
+  //   materials,
+  //   enrollment,
+  // });
 
   return (
     <motion.div
