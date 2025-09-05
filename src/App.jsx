@@ -48,6 +48,10 @@ const LearningPage = React.lazy(() =>
   import('/src/pages/student/LearningPage.jsx')
 );
 
+const CertificatePage = React.lazy(() =>
+  import('/src/pages/student/CertificatePage.jsx')
+);
+
 function App() {
   return (
     <Router>
@@ -68,6 +72,10 @@ function App() {
               element={<StudentDashboardPage />}
             />
             <Route path="/learn/:courseSlug" element={<LearningPage />} />
+            <Route
+              path="/learn/:courseSlug/certificate"
+              element={<CertificatePage />}
+            />
 
             {/* Rute Khusus Admin */}
             <Route

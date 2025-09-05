@@ -26,3 +26,22 @@
 .fr-box .fr-wrapper + div a {
   display: none !important;
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .certificate-container,
+  .certificate-container * {
+    visibility: visible;
+  }
+  .certificate-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+}
