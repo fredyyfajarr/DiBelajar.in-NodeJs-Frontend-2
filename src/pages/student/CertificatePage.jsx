@@ -1,103 +1,136 @@
 // src/pages/student/CertificatePage.jsx
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-// --- 1. IMPORT HOOK YANG DIBUTUHKAN ---
 import { useCertificateData } from '/src/hooks/useStudent.js';
 import useAuthStore from '/src/store/authStore.js';
 
 const CertificatePage = () => {
   const { courseSlug } = useParams();
-  const { user } = useAuthStore(); // Ambil data user yang login
-
-  // --- 2. PANGGIL HOOK UNTUK MENGAMBIL DATA SERTIFIKAT ---
-  // Kita set 'isCourseCompleted' ke true karena halaman ini hanya bisa diakses jika sudah selesai
+  const { user } = useAuthStore();
   const {
     data: response,
     isLoading,
     isError,
   } = useCertificateData(courseSlug, true);
 
-  const certificateData = response?.data?.data;
+  useEffect(() => {
+    const styleId = 'certificate-print-style';
+    document.getElementById(styleId)?.remove();
 
-  // Format tanggal agar lebih mudah dibaca
+    const style = document.createElement('style');
+    style.id = styleId;
+    style.innerHTML = `
+      @media print {
+        @page {
+          size: A4 landscape;
+          margin: 0 !important;
+        }
+        
+        body {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+        }
+
+        .printable-area, .printable-area * {
+          visibility: visible;
+        }
+        body * {
+          visibility: hidden;
+        }
+        
+        .certificate-container {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+        }
+
+        /* --- PERBAIKAN POSISI UNTUK PRINT --- */
+        .cert-student-name { top: 305px !important; } /* NAIKKAN NAMA SISWA */
+        .cert-course-title { top: 410px !important; } /* NAIKKAN NAMA KURSUS */
+        .cert-completion-date { bottom: 150px !important; } /* TURUNKAN TANGGAL */
+        /* ------------------------------------ */
+      }
+    `;
+    document.head.appendChild(style);
+
+    return () => {
+      document.getElementById(styleId)?.remove();
+    };
+  }, []);
+
+  const certificateData = response?.data?.data;
   const completionDate = certificateData?.completionDate
     ? new Date(certificateData.completionDate).toLocaleDateString('id-ID', {
         day: 'numeric',
         month: 'long',
         year: 'numeric',
       })
-    : 'Tanggal tidak tersedia';
+    : ' ';
 
   const handlePrint = () => {
     window.print();
   };
 
-  // --- 3. TAMBAHKAN KONDISI LOADING DAN ERROR ---
   if (isLoading) {
     return <div className="text-center py-20">Memuat data sertifikat...</div>;
   }
-
   if (isError) {
     return (
       <div className="text-center py-20 text-red-500">
-        <p>
-          Gagal memuat data sertifikat. Pastikan Anda telah menyelesaikan semua
-          materi.
-        </p>
+        <p>Gagal memuat data. Pastikan kursus telah selesai.</p>
         <Link
           to={`/learn/${courseSlug}`}
-          className="text-primary hover:underline mt-4 inline-block"
+          className="text-primary hover:underline mt-4"
         >
-          Kembali ke Halaman Belajar
+          Kembali
         </Link>
       </div>
     );
   }
 
   return (
-    <>
-      {/* Tombol Cetak (Akan disembunyikan saat print) */}
+    <div className="printable-area bg-gray-200 pb-16">
       <div className="print:hidden container mx-auto text-center py-8">
         <button
           onClick={handlePrint}
-          className="bg-primary text-white font-semibold py-3 px-8 rounded-lg shadow-lg hover:scale-105 transform transition-transform duration-300"
+          className="bg-primary text-white font-semibold py-3 px-8 rounded-lg"
         >
           Cetak atau Simpan sebagai PDF
         </button>
       </div>
 
-      {/* Area Sertifikat (SEKARANG DENGAN DATA DINAMIS) */}
-      <div className="certificate-container w-[1123px] h-[794px] mx-auto my-0 p-12 relative font-sans">
+      <div className="certificate-container w-[1123px] h-[794px] mx-auto my-0 relative shadow-lg text-center">
         <img
           src="/sertifikat-template.jpg"
           alt="Sertifikat"
-          className="absolute top-0 left-0 w-full h-full -z-10"
+          className="absolute top-0 left-0 w-full h-full object-cover"
         />
 
-        <div className="text-center text-[#07294D]">
-          <p className="mt-[210px] text-lg">SERTIFIKAT INI DIBERIKAN KEPADA</p>
-          <h1 className="text-6xl font-bold mt-4 tracking-wider">
-            {/* Gunakan data dinamis */}
+        {/* 1. Nama Siswa (Tambahkan className="cert-student-name") */}
+        <div className="cert-student-name absolute w-full left-1/2 -translate-x-1/2 top-[305px]">
+          <h2 className="text-5xl font-bold" style={{ color: '#07294D' }}>
             {(certificateData?.studentName || user.name).toUpperCase()}
-          </h1>
-          <p className="text-lg mt-12">TELAH BERHASIL MENYELESAIKAN KURSUS</p>
-          <h2 className="text-4xl font-semibold mt-4">
-            {/* Gunakan data dinamis */}
-            {certificateData?.courseTitle}
           </h2>
-          <p className="text-lg mt-20">
-            Sertifikat ini diberikan kepada peserta yang telah menyelesaikan
-            kursus online di DiBelajar.in dengan standar pembelajaran yang
-            terstruktur, terukur, dan relevan dengan kebutuhan industri.
-          </p>
-          <p className="mt-12 text-xl font-semibold">
-            {/* Gunakan data dinamis */}
+        </div>
+
+        {/* 2. Nama Kursus (Tambahkan className="cert-course-title") */}
+        <div className="cert-course-title absolute w-full left-1/2 -translate-x-1/2 top-[410px]">
+          <h3 className="text-4xl font-semibold" style={{ color: '#07294D' }}>
+            {certificateData?.courseTitle}
+          </h3>
+        </div>
+
+        {/* 3. Tanggal Kelulusan (Tambahkan className="cert-completion-date") */}
+        <div className="cert-completion-date absolute w-full left-1/2 -translate-x-1/2 bottom-[115px]">
+          <p className="text-lg font-medium" style={{ color: '#334155' }}>
             {completionDate}
           </p>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
