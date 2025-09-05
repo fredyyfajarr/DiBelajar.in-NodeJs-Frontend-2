@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import StaticStarRating from './StaticStarRating';
 
 const CourseCard = ({ course }) => {
   const thumbnailUrl =
@@ -45,6 +46,12 @@ const CourseCard = ({ course }) => {
             <p className="text-sm text-gray-600">
               Oleh {course.instructorId?.name || 'Instruktur Ahli'}
             </p>
+            <div className="mt-2">
+              <StaticStarRating
+                rating={course.averageRating}
+                reviewCount={course.reviewCount}
+              />
+          </div>
           </div>
         </div>
       </Link>

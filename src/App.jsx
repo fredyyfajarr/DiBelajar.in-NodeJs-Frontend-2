@@ -41,6 +41,9 @@ const EnrollmentManagementPage = React.lazy(() =>
 const InstructorEnrollmentPage = React.lazy(() =>
   import('/src/pages/instructor/InstructorEnrollmentPage.jsx')
 );
+const StudentProgressPage = React.lazy(() =>
+  import('/src/pages/instructor/StudentProgressPage.jsx')
+);
 const StudentDashboardPage = React.lazy(() =>
   import('/src/pages/student/StudentDashboardPage.jsx')
 );
@@ -120,6 +123,10 @@ function App() {
                 path="courses/:courseId/enrollments"
                 element={<InstructorEnrollmentPage />}
               />
+              <Route
+                path="courses/:courseId/student-progress/:userId"
+                element={<StudentProgressPage />}
+            />
             </Route>
           </Route>
         </Route>

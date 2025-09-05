@@ -53,6 +53,14 @@ const getCertificateData = (courseSlug) => {
   return axiosInstance.get(`/courses/${courseSlug}/certificate-data`);
 };
 
+const getReviewsByCourse = (courseSlug) => {
+  return axiosInstance.get(`/courses/${courseSlug}/reviews`);
+};
+
+const addReview = ({ courseSlug, reviewData }) => {
+  return axiosInstance.post(`/courses/${courseSlug}/reviews`, reviewData);
+};
+
 export default {
   enrollInCourse,
   getMyEnrollments,
@@ -62,4 +70,6 @@ export default {
   createForumPost,
   updateProgress,
   getCertificateData,
+  getReviewsByCourse,
+  addReview,
 };

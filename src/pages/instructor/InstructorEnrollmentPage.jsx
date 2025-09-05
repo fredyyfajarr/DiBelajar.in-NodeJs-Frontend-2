@@ -1,4 +1,5 @@
-/* eslint-disable no-unused-vars */
+// src/pages/instructor/InstructorEnrollmentPage.jsx
+
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -15,10 +16,6 @@ const InstructorEnrollmentPage = () => {
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.5 } },
-  };
-
-  const rowVariants = {
-    hover: { scale: 1.01, transition: { duration: 0.2 } },
   };
 
   return (
@@ -54,16 +51,17 @@ const InstructorEnrollmentPage = () => {
                   <th className="text-left p-3 font-semibold text-gray-700">
                     Email
                   </th>
+                  <th className="text-left p-3 font-semibold text-gray-700">
+                    Aksi
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {enrollments.length > 0 ? (
                   enrollments.map((enroll) => (
-                    <motion.tr
+                    <tr
                       key={enroll._id}
                       className="block md:table-row mb-4 border border-gray-100 rounded-xl shadow-sm md:border-b md:rounded-none md:shadow-none hover:bg-gray-50"
-                      variants={rowVariants}
-                      whileHover="hover"
                     >
                       <td className="p-3 block md:table-cell text-right md:text-left border-b md:border-none">
                         <span className="font-semibold md:hidden text-gray-700 float-left">
@@ -77,11 +75,23 @@ const InstructorEnrollmentPage = () => {
                         </span>
                         {enroll.userId?.email || 'N/A'}
                       </td>
-                    </motion.tr>
+                      {/* --- PERBAIKAN DI SINI --- */}
+                      <td className="p-3 block md:table-cell text-right md:text-left">
+                        <span className="font-semibold md:hidden text-gray-700 float-left">
+                          Aksi:
+                        </span>
+                        <Link
+                          to={`/instructor/courses/${courseId}/student-progress/${enroll.userId?._id}`}
+                          className="text-primary hover:underline font-medium"
+                        >
+                          Lihat Progres
+                        </Link>
+                      </td>
+                    </tr>
                   ))
                 ) : (
                   <tr>
-                    <td colSpan="2" className="text-center p-4 text-gray-600">
+                    <td colSpan="3" className="text-center p-4 text-gray-600">
                       Belum ada pendaftar.
                     </td>
                   </tr>

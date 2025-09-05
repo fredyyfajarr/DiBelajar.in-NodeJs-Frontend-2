@@ -26,3 +26,7 @@
 .fr-box .fr-wrapper + div a {
   display: none !important;
 }
+
+html {
+  scroll-behavior: smooth;
+}

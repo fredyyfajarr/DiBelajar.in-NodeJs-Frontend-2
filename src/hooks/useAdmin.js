@@ -260,3 +260,11 @@ export const useCreateForumPost = () => {
     },
   });
 };
+
+export const useStudentProgress = (courseId, userId) => {
+  return useQuery({
+    queryKey: ['studentProgress', courseId, userId],
+    queryFn: () => adminService.getStudentProgress(courseId, userId),
+    enabled: !!courseId && !!userId, // Hanya aktif jika kedua ID ada
+  });
+};

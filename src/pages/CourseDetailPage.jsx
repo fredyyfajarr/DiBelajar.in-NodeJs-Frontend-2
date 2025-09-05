@@ -6,6 +6,7 @@ import { useCourseDetail } from '/src/hooks/useCourses.js';
 import { useEnrollInCourse } from '/src/hooks/useStudent.js';
 import useAuthStore from '/src/store/authStore.js';
 import useModalStore from '/src/store/modalStore.js';
+import CourseReviews from '../components/CourseReviews';
 
 const CourseDetailPage = () => {
   const { courseSlug } = useParams();
@@ -118,6 +119,7 @@ const CourseDetailPage = () => {
               </motion.button>
             </motion.div>
           )}
+          <CourseReviews courseSlug={courseSlug} />
         </div>
         <div className="lg:col-span-1">
           <div className="bg-white p-6 rounded-2xl shadow-md sticky top-24">

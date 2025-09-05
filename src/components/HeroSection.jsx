@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import useModalStore from '/src/store/modalStore';
+import useAuthStore from '/src/store/authStore.js';
 
 const HeroSection = () => {
   const { openModal } = useModalStore();
+  const { isAuthenticated } = useAuthStore();
   const title = 'Belajar Skill Baru, Buka Peluang Baru';
   const words = title.split(' ');
 
@@ -65,12 +66,21 @@ const HeroSection = () => {
           initial="hidden"
           animate="visible"
         >
-          <button
-            onClick={() => openModal('REGISTER')}
-            className="bg-primary text-white px-6 py-3 rounded-full font-semibold text-lg shadow-lg hover:bg-opacity-90 transition-all duration-300"
-          >
-            Mulai Belajar Sekarang
-          </button>
+          {isAuthenticated ? (
+            <a
+              href="#popular-courses"
+              className="bg-primary text-white px-6 py-3 rounded-full font-semibold text-lg shadow-lg hover:bg-opacity-90 transition-all duration-300"
+            >
+              Jelajahi Kursus Populer
+            </a>
+          ) : (
+            <button
+              onClick={() => openModal('REGISTER')}
+              className="bg-primary text-white px-6 py-3 rounded-full font-semibold text-lg shadow-lg hover:bg-opacity-90 transition-all duration-300"
+            >
+              Mulai Belajar Sekarang
+            </button>
+          )}
         </motion.div>
       </div>
     </div>

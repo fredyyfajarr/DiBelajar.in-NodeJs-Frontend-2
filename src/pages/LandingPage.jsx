@@ -84,7 +84,10 @@ const LandingPage = () => {
       <HeroSection />
       <FeaturesSection />
 
-      <div className="container mx-auto px-4 sm:px-6 py-12">
+      <div
+        id="popular-courses"
+        className="container mx-auto px-4 sm:px-6 py-12"
+      >
         {renderTitle()}
         {renderContent()}
 

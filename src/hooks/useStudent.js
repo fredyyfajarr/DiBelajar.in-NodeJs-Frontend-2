@@ -78,3 +78,29 @@ export const useCertificateData = (courseSlug, isCourseCompleted) => {
     enabled: !!courseSlug && !!isCourseCompleted,
   });
 };
+
+export const useCourseReviews = (courseSlug) => {
+  return useQuery({
+    queryKey: ['reviews', courseSlug],
+    queryFn: () => studentService.getReviewsByCourse(courseSlug),
+    enabled: !!courseSlug, // Hanya aktif jika courseSlug ada
+  });
+};
+
+// Hook untuk mengirim ulasan baru
+export const useAddReview = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: studentService.addReview,
+    onSuccess: (data, variables) => {
+      // Setelah berhasil, muat ulang daftar ulasan untuk kursus tersebut
+      queryClient.invalidateQueries({
+        queryKey: ['reviews', variables.courseSlug],
+      });
+      alert('Terima kasih atas ulasan Anda!');
+    },
+    onError: (error) => {
+      alert(error.response?.data?.error || 'Gagal mengirim ulasan.');
+    },
+  });
+};

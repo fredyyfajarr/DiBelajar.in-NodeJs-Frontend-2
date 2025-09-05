@@ -2,9 +2,11 @@
 import React from 'react';
 import useModalStore from '/src/store/modalStore';
 import { motion } from 'framer-motion';
+import useAuthStore from '/src/store/authStore.js';
 
 const CTASection = () => {
   const { openModal } = useModalStore();
+  const { isAuthenticated } = useAuthStore();
 
   const buttonVariants = {
     hover: { scale: 1.05, transition: { duration: 0.3 } },
@@ -22,18 +24,29 @@ const CTASection = () => {
           Siap untuk Mulai Belajar?
         </h2>
         <p className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-8">
-          Buat akun gratis sekarang dan akses semua kursus kami selamanya.
+          {isAuthenticated
+            ? 'Lanjutkan perjalanan belajarmu dan jelajahi kursus lainnya.'
+            : 'Buat akun gratis sekarang dan akses semua kursus kami selamanya.'}
         </p>
-        <motion.button
-          variants={buttonVariants}
-          whileHover="hover"
-          whileTap="tap"
-          animate="animate"
-          onClick={() => openModal('REGISTER')}
-          className="bg-white text-primary font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-opacity-90 transition-all duration-300"
-        >
-          Daftar Gratis
-        </motion.button>
+        {isAuthenticated ? (
+          <a
+            href="#popular-courses"
+            className="bg-white text-primary font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-opacity-90 transition-all duration-300"
+          >
+            Lihat Kursus Populer
+          </a>
+        ) : (
+          <motion.button
+            variants={buttonVariants}
+            whileHover="hover"
+            whileTap="tap"
+            animate="animate"
+            onClick={() => openModal('REGISTER')}
+            className="bg-white text-primary font-semibold py-3 px-8 rounded-full shadow-lg hover:bg-opacity-90 transition-all duration-300"
+          >
+            Daftar Gratis
+          </motion.button>
+        )}
       </div>
     </div>
   );
