@@ -111,16 +111,7 @@ const MaterialFormModal = ({
         });
       }
     }
-    return () => {
-      if (!isOpen) {
-        reset({
-          title: '',
-          description: '',
-          testContent: [],
-        });
-      }
-    };
-  }, [currentMaterial, mode, reset, isOpen]);
+  }, [isOpen, mode, currentMaterial, reset]);
 
   const onSubmit = (data) => {
     // Hapus testContent jika kosong agar tidak tersimpan di DB
