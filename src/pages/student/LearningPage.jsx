@@ -16,11 +16,11 @@ const ProgressStep = ({
   onClick,
   buttonText,
 }) => {
-  // ... (Tidak ada perubahan di komponen ini) ...
   const CheckboxIcon = () => (
     <div
       className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 flex-shrink-0 ${
-        isCompleted ? 'bg-green-500' : 'bg-gray-300'
+        // PERUBAHAN: Gunakan warna primary saat selesai
+        isCompleted ? 'bg-primary' : 'bg-gray-300'
       }`}
     >
       {isCompleted && (
@@ -57,7 +57,8 @@ const ProgressStep = ({
         <button
           onClick={onClick}
           disabled={isDisabled}
-          className="px-4 py-1.5 bg-indigo-600 text-white text-sm font-semibold rounded-md hover:bg-indigo-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ml-2"
+          // PERUBAHAN: Gunakan warna primary untuk tombol
+          className="px-4 py-1.5 bg-primary text-white text-sm font-semibold rounded-md hover:opacity-90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ml-2"
         >
           {buttonText}
         </button>
@@ -75,24 +76,12 @@ const MaterialItem = ({
   courseId,
   courseSlug,
 }) => {
-  // // DEBUG 3: Tampilkan data material dan progress yang diterima komponen ini
-  // console.log(`[MaterialItem #${index + 1}] Data Material:`, material);
-  // console.log(`[MaterialItem #${index + 1}] Data Progress Diterima:`, progress);
-
   const testCompleted = progress?.hasCompletedTest || false;
   const assignmentSubmitted = progress?.hasSubmittedAssignment || false;
   const forumPostCount = progress?.forumPostCount || 0;
   const materialCompleted = progress?.isCompleted || false;
-  const hasTest = material.testContent && material.testContent.length > 0;
 
-  // DEBUG 4: Tampilkan hasil kalkulasi status progres
-  // console.log(`[MaterialItem #${index + 1}] Status Kalkulasi:`, {
-  //   hasTest,
-  //   testCompleted,
-  //   assignmentSubmitted,
-  //   forumPostCount,
-  //   materialCompleted,
-  // });
+  const hasTest = material.testContent && material.testContent.length > 0;
 
   const { mutate: updateProgress } = useUpdateProgress();
   const handleCompleteMaterial = () => {
@@ -121,10 +110,12 @@ const MaterialItem = ({
     <motion.div
       variants={cardVariants}
       className={`p-6 bg-white border rounded-2xl shadow-sm transition-all duration-200 ${
-        materialCompleted ? 'border-green-500 bg-green-50' : 'border-gray-100'
+        // PERUBAHAN: Gunakan border primary saat selesai
+        materialCompleted ? 'border-primary bg-purple-50' : 'border-gray-100'
       }`}
     >
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-6">
+        {/* Kolom Kiri: Judul dan Deskripsi */}
         <div className="lg:col-span-2">
           <h3 className="text-xl font-bold text-gray-900 font-sans mb-2">
             #{index + 1}: {material.title}
@@ -135,6 +126,7 @@ const MaterialItem = ({
           />
         </div>
 
+        {/* Kolom Kanan: Daftar Tugas / Checklist */}
         <div className="lg:col-span-1">
           <div className="space-y-3 p-4 bg-gray-100 rounded-lg border">
             <h4 className="font-semibold text-center mb-2 text-gray-700">
@@ -144,7 +136,7 @@ const MaterialItem = ({
               <ProgressStep
                 label="Kerjakan Tes"
                 isCompleted={testCompleted}
-                isDisabled={testCompleted}
+                isDisabled={false}
                 onClick={() => onButtonClick('test', material)}
                 buttonText="Mulai Tes"
               />
@@ -152,7 +144,7 @@ const MaterialItem = ({
             <ProgressStep
               label="Kumpulkan Tugas"
               isCompleted={assignmentSubmitted}
-              isDisabled={(hasTest && !testCompleted) || assignmentSubmitted}
+              isDisabled={hasTest ? !testCompleted : false}
               onClick={() => onButtonClick('assignment', material)}
               buttonText="Kumpulkan"
             />
@@ -160,7 +152,8 @@ const MaterialItem = ({
               <div className="flex items-center">
                 <div
                   className={`w-6 h-6 rounded-full flex items-center justify-center mr-3 flex-shrink-0 ${
-                    forumPostCount >= 2 ? 'bg-green-500' : 'bg-gray-300'
+                    // PERUBAHAN: Gunakan warna primary saat selesai
+                    forumPostCount >= 2 ? 'bg-primary' : 'bg-gray-300'
                   }`}
                 >
                   {forumPostCount >= 2 && (
@@ -192,24 +185,29 @@ const MaterialItem = ({
               <button
                 onClick={() => onButtonClick('forum', material)}
                 disabled={!assignmentSubmitted}
-                className="px-4 py-1.5 bg-purple-600 text-white text-sm font-semibold rounded-md hover:bg-purple-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ml-2"
+                // PERUBAHAN: Gunakan warna primary untuk tombol diskusi
+                className="px-4 py-1.5 bg-primary text-white text-sm font-semibold rounded-md hover:opacity-90 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed ml-2"
               >
                 Diskusi
               </button>
             </div>
           </div>
+
           {canCompleteMaterial && (
             <div className="mt-4">
               <button
                 onClick={handleCompleteMaterial}
-                className="w-full px-4 py-2 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-all duration-200"
+                // PERUBAHAN: Gunakan warna primary untuk tombol selesaikan materi
+                className="w-full px-4 py-2 bg-primary text-white font-semibold rounded-xl hover:opacity-90 transition-all duration-200"
               >
                 Selesaikan Materi
               </button>
             </div>
           )}
+
           {materialCompleted && (
-            <p className="mt-4 text-sm font-semibold text-green-700 text-center">
+            // PERUBAHAN: Gunakan warna primary untuk teks "Materi Telah Selesai"
+            <p className="mt-4 text-sm font-semibold text-primary text-center">
               ✓ Materi Telah Selesai
             </p>
           )}
@@ -226,23 +224,16 @@ const LearningPage = () => {
   const [activeModal, setActiveModal] = useState(null);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
 
-  // DEBUG 1: Tampilkan data mentah dari API
-  // useEffect(() => {
-  //   if (data) {
-  //     console.log('========================================');
-  //     console.log('DEBUG 1: Data mentah dari hook useCourseDetail:', data);
-  //     console.log('========================================');
-  //   }
-  // }, [data]);
-
   const handleOpenModal = (modalType, material) => {
     setSelectedMaterial(material);
     setActiveModal(modalType);
   };
+
   const handleCloseModal = () => {
     setActiveModal(null);
     setSelectedMaterial(null);
   };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -250,6 +241,7 @@ const LearningPage = () => {
       transition: { duration: 0.5, staggerChildren: 0.1 },
     },
   };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen text-gray-600">
@@ -266,21 +258,10 @@ const LearningPage = () => {
   }
 
   const { course, materials, enrollment } = data;
-
-  // --- 2. TAMBAHKAN LOGIKA INI ---
-  // Cek apakah semua materi sudah selesai
   const allMaterialsCompleted =
     materials.length > 0 &&
     enrollment?.progress.filter((p) => p.isCompleted).length ===
       materials.length;
-  // -----------------------------
-
-  // DEBUG 2: Tampilkan data setelah di-destructure
-  // console.log('DEBUG 2: Data setelah di-destructure:', {
-  //   course,
-  //   materials,
-  //   enrollment,
-  // });
 
   return (
     <motion.div
@@ -301,6 +282,7 @@ const LearningPage = () => {
       <h2 className="text-2xl font-semibold text-gray-900 font-sans mb-6">
         Materi Pembelajaran
       </h2>
+
       <div className="flex flex-col gap-6">
         {materials.map((material, index) => {
           const materialProgress = enrollment?.progress.find(
@@ -319,10 +301,11 @@ const LearningPage = () => {
           );
         })}
       </div>
-      {/* --- 3. TAMBAHKAN BLOK KODE KONDISIONAL DI BAWAH INI --- */}
+
       {allMaterialsCompleted && (
         <motion.div
-          className="mt-12 text-center p-8 bg-green-500 rounded-2xl shadow-lg text-white"
+          // PERUBAHAN: Gunakan warna primary untuk blok "Selamat!"
+          className="mt-12 text-center p-8 bg-primary rounded-2xl shadow-lg text-white"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
@@ -330,18 +313,18 @@ const LearningPage = () => {
           <h2 className="text-3xl font-bold">
             🎉 Selamat, Anda Telah Menyelesaikan Kursus Ini!
           </h2>
-          <p className="mt-2 text-lg text-green-100">
+          <p className="mt-2 text-lg opacity-90">
             Anda sekarang berhak untuk mengunduh sertifikat kelulusan Anda.
           </p>
           <Link
             to={`/learn/${courseSlug}/certificate`}
-            className="mt-6 inline-block bg-white text-green-600 font-semibold py-3 px-8 rounded-lg shadow-md hover:scale-105 transform transition-transform duration-300"
+            // PERUBAHAN: Sesuaikan warna tombol agar kontras dengan background primary
+            className="mt-6 inline-block bg-white text-primary font-semibold py-3 px-8 rounded-lg shadow-md hover:scale-105 transform transition-transform duration-300"
           >
             Lihat & Cetak Sertifikat
           </Link>
         </motion.div>
       )}
-      {/* ---------------------------------------------------- */}
 
       {selectedMaterial && (
         <>
