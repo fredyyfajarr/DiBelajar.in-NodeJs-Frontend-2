@@ -8,6 +8,7 @@ export default defineConfig({
     terserOptions: {
       compress: {
         drop_console: true, // Ini akan menghapus semua console.log saat build
+        drop_debugger: true,
       },
     },
   },
