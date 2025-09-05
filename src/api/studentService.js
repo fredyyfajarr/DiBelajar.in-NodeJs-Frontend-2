@@ -49,6 +49,10 @@ const updateProgress = ({ courseId, materialId, step }) => {
   );
 };
 
+const getCertificateData = (courseSlug) => {
+  return axiosInstance.get(`/courses/${courseSlug}/certificate-data`);
+};
+
 export default {
   enrollInCourse,
   getMyEnrollments,
@@ -57,4 +61,5 @@ export default {
   getForumPosts,
   createForumPost,
   updateProgress,
+  getCertificateData,
 };

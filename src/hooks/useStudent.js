@@ -57,7 +57,7 @@ export const useUpdateProgress = () => {
     mutationFn: studentService.updateProgress,
     onSuccess: (data, variables) => {
       // Baris ini adalah kuncinya.
-    // 'variables.corseSlug' berasal dari data yang kita kirim saat memanggil mutate.
+      // 'variables.corseSlug' berasal dari data yang kita kirim saat memanggil mutate.
       // Ini memberitahu React Query bahwa data untuk 'course' dengan slug ini sudah usang
       // dan perlu diambil ulang.
       queryClient.invalidateQueries({
@@ -67,5 +67,14 @@ export const useUpdateProgress = () => {
     onError: (error) => {
       alert(error.response?.data?.error || 'Gagal memperbarui progres.');
     },
+  });
+};
+
+export const useCertificateData = (courseSlug, isCourseCompleted) => {
+  return useQuery({
+    queryKey: ['certificateData', courseSlug],
+    queryFn: () => studentService.getCertificateData(courseSlug),
+    // Hanya jalankan hook ini jika courseSlug ada DAN kursus sudah selesai
+    enabled: !!courseSlug && !!isCourseCompleted,
   });
 };

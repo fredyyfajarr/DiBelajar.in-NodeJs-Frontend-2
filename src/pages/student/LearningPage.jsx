@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useCourseDetail } from '/src/hooks/useCourses.js';
 import { useUpdateProgress } from '/src/hooks/useStudent.js';
@@ -267,6 +267,14 @@ const LearningPage = () => {
 
   const { course, materials, enrollment } = data;
 
+  // --- 2. TAMBAHKAN LOGIKA INI ---
+  // Cek apakah semua materi sudah selesai
+  const allMaterialsCompleted =
+    materials.length > 0 &&
+    enrollment?.progress.filter((p) => p.isCompleted).length ===
+      materials.length;
+  // -----------------------------
+
   // DEBUG 2: Tampilkan data setelah di-destructure
   // console.log('DEBUG 2: Data setelah di-destructure:', {
   //   course,
@@ -311,6 +319,29 @@ const LearningPage = () => {
           );
         })}
       </div>
+      {/* --- 3. TAMBAHKAN BLOK KODE KONDISIONAL DI BAWAH INI --- */}
+      {allMaterialsCompleted && (
+        <motion.div
+          className="mt-12 text-center p-8 bg-green-500 rounded-2xl shadow-lg text-white"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+        >
+          <h2 className="text-3xl font-bold">
+            🎉 Selamat, Anda Telah Menyelesaikan Kursus Ini!
+          </h2>
+          <p className="mt-2 text-lg text-green-100">
+            Anda sekarang berhak untuk mengunduh sertifikat kelulusan Anda.
+          </p>
+          <Link
+            to={`/learn/${courseSlug}/certificate`}
+            className="mt-6 inline-block bg-white text-green-600 font-semibold py-3 px-8 rounded-lg shadow-md hover:scale-105 transform transition-transform duration-300"
+          >
+            Lihat & Cetak Sertifikat
+          </Link>
+        </motion.div>
+      )}
+      {/* ---------------------------------------------------- */}
 
       {selectedMaterial && (
         <>
