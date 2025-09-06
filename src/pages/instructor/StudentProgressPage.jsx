@@ -1,5 +1,3 @@
-// src/pages/instructor/StudentProgressPage.jsx
-
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useStudentProgress } from '/src/hooks/useAdmin.js';
@@ -49,33 +47,33 @@ const ProgressItem = ({ material, progressStatus }) => {
 };
 
 const StudentProgressPage = () => {
-  const { courseId, userId } = useParams();
+  // Ambil course slug dan student slug dari URL
+  const { courseId: courseSlug, userId: userSlug } = useParams();
   const {
     data: response,
     isLoading,
     isError,
-  } = useStudentProgress(courseId, userId);
+  } = useStudentProgress(courseSlug, userSlug);
 
-  // --- PERBAIKAN DI SINI ---
-  // Pindahkan logika pengambilan data ke bawah setelah pengecekan isLoading
-
+  // Tampilkan pesan loading jika data belum siap
   if (isLoading) {
     return <div className="text-center py-10">Memuat progres siswa...</div>;
   }
 
-  const studentName = response?.data?.data?.enrollment?.userId?.name;
-  const courseTitle = response?.data?.data?.enrollment?.courseId?.title;
-  const allMaterials = response?.data?.data?.allMaterialsInCourse || [];
-  const studentProgress = response?.data?.data?.enrollment?.progress || [];
-
-  if (isError || !studentName) {
-    // Tambahkan pengecekan !studentName
+  // Tampilkan pesan error jika terjadi kegagalan fetching
+  if (isError) {
     return (
       <div className="text-center py-10 text-red-500">
         Gagal memuat data. Pastikan URL benar.
       </div>
     );
   }
+
+  // Ambil data SETELAH dipastikan tidak loading atau error
+  const studentName = response?.data?.data?.enrollment?.userId?.name;
+  const courseTitle = response?.data?.data?.enrollment?.courseId?.title;
+  const allMaterials = response?.data?.data?.allMaterialsInCourse || [];
+  const studentProgress = response?.data?.data?.enrollment?.progress || [];
 
   return (
     <motion.div
@@ -85,12 +83,11 @@ const StudentProgressPage = () => {
     >
       <div className="mb-8">
         <Link
-          to={`/instructor/courses/${courseId}/enrollments`}
+          to={`/instructor/courses/${courseSlug}/enrollments`}
           className="text-sm text-primary hover:underline mb-2 inline-block"
         >
           &larr; Kembali ke Daftar Pendaftar
         </Link>
-        {/* Sekarang data ini dijamin sudah ada */}
         <h1 className="text-3xl font-bold text-gray-900 mt-1">
           Progres Belajar: <span className="font-normal">{studentName}</span>
         </h1>
@@ -104,7 +101,8 @@ const StudentProgressPage = () => {
         <div className="space-y-3">
           {allMaterials.map((material) => {
             const progressStatus = studentProgress.find(
-              (p) => p.materialId._id === material._id
+              // Pastikan perbandingan ID aman
+              (p) => p.materialId?._id === material._id
             );
             return (
               <ProgressItem
