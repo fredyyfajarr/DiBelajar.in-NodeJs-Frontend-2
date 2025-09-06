@@ -107,6 +107,20 @@ const AdminSidebar = () => {
               🎓 Pendaftaran
             </NavLink>
           )}
+
+          {user?.role === 'admin' && (
+            <NavLink
+              to="/admin/categories"
+              className={({ isActive }) =>
+                `flex items-center gap-3 px-4 py-2 rounded-md font-semibold ${
+                  isActive ? activeLinkClass : defaultLinkClass
+                }`
+              }
+              onClick={() => setIsOpen(false)}
+            >
+              🏷️ Kategori
+            </NavLink>
+          )}
         </nav>
       </aside>
 

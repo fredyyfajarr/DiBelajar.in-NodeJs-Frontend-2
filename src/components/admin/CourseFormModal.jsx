@@ -1,16 +1,17 @@
 // src/components/admin/CourseFormModal.jsx
 
 import React, { useEffect, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form'; // 1. Import Controller
+import { useForm, Controller } from 'react-hook-form';
 import Modal from '/src/components/Modal.jsx';
 import {
   useCreateCourse,
   useUpdateCourse,
   useInstructors,
 } from '/src/hooks/useAdmin.js';
+import { useCategories } from '/src/hooks/useCategories.js'; // <-- Import hook kategori
 import useAuthStore from '/src/store/authStore.js';
 
-// 2. Import Froala Editor
+// Import Froala Editor
 import FroalaEditor from 'react-froala-wysiwyg';
 
 const CourseFormModal = ({ isOpen, onClose, mode, currentCourse }) => {
@@ -20,16 +21,22 @@ const CourseFormModal = ({ isOpen, onClose, mode, currentCourse }) => {
     reset,
     watch,
     setValue,
-    control, // <-- Pastikan 'control' diambil dari useForm
+    control,
     formState: { errors },
   } = useForm();
 
   const [preview, setPreview] = useState(null);
   const { user } = useAuthStore();
-  const { mutate: createCourse, isPending: isCreating } = useCreateCourse();
-  const { mutate: updateCourse, isPending: isUpdating } = useUpdateCourse();
+
+  // --- Mengambil data dinamis ---
+  const { data: categories = [], isLoading: isLoadingCategories } =
+    useCategories();
   const { data: instructorsResponse } = useInstructors();
   const instructors = instructorsResponse?.data?.data || [];
+
+  const { mutate: createCourse, isPending: isCreating } = useCreateCourse();
+  const { mutate: updateCourse, isPending: isUpdating } = useUpdateCourse();
+
   const thumbnailFile = watch('thumbnail');
 
   useEffect(() => {
@@ -45,16 +52,19 @@ const CourseFormModal = ({ isOpen, onClose, mode, currentCourse }) => {
   }, [thumbnailFile, currentCourse, mode]);
 
   useEffect(() => {
-    if (mode === 'edit' && currentCourse) {
-      reset({
-        title: currentCourse.title,
-        description: currentCourse.description,
-        instructorId: currentCourse.instructorId._id,
-      });
-    } else {
-      reset({ title: '', description: '', instructorId: '' });
-      if (user?.role === 'instructor') {
-        setValue('instructorId', user._id);
+    if (isOpen) {
+      if (mode === 'edit' && currentCourse) {
+        reset({
+          title: currentCourse.title,
+          description: currentCourse.description,
+          instructorId: currentCourse.instructorId._id,
+          category: currentCourse.category._id, // Gunakan ID kategori
+        });
+      } else {
+        reset({ title: '', description: '', instructorId: '', category: '' });
+        if (user?.role === 'instructor') {
+          setValue('instructorId', user._id);
+        }
       }
     }
   }, [currentCourse, mode, reset, isOpen, user, setValue]);
@@ -64,16 +74,24 @@ const CourseFormModal = ({ isOpen, onClose, mode, currentCourse }) => {
     formData.append('title', data.title);
     formData.append('description', data.description);
     formData.append('instructorId', data.instructorId || user._id);
+    formData.append('category', data.category); // Kirim ID kategori
+
     if (data.thumbnail && data.thumbnail[0] instanceof File) {
       formData.append('thumbnail', data.thumbnail[0]);
     }
+
+    const handleSuccess = () => {
+      reset();
+      onClose();
+    };
+
     if (mode === 'edit') {
       updateCourse(
         { courseId: currentCourse._id, formData },
-        { onSuccess: onClose }
+        { onSuccess: handleSuccess }
       );
     } else {
-      createCourse(formData, { onSuccess: onClose });
+      createCourse(formData, { onSuccess: handleSuccess });
     }
   };
 
@@ -82,12 +100,13 @@ const CourseFormModal = ({ isOpen, onClose, mode, currentCourse }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="p-6 w-full max-w-4xl">
-        {' '}
-        {/* Dibuat lebih besar */}
         <h2 className="text-2xl font-bold mb-4">
           {mode === 'edit' ? 'Edit Kursus' : 'Tambah Kursus Baru'}
         </h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="space-y-4 max-h-[80vh] overflow-y-auto pr-2"
+        >
           <div>
             <label className="block text-sm font-medium text-text-muted">
               Judul Kursus
@@ -103,7 +122,6 @@ const CourseFormModal = ({ isOpen, onClose, mode, currentCourse }) => {
             )}
           </div>
 
-          {/* 3. GANTI TEXTAREA DENGAN FROALA EDITOR */}
           <div>
             <label className="block text-sm font-medium text-text-muted">
               Deskripsi
@@ -118,8 +136,7 @@ const CourseFormModal = ({ isOpen, onClose, mode, currentCourse }) => {
                   model={value}
                   onModelChange={onChange}
                   config={{
-                    placeholderText:
-                      'Tulis deskripsi kursus yang menarik di sini...',
+                    placeholderText: 'Tulis deskripsi kursus...',
                     heightMin: 200,
                   }}
                 />
@@ -128,6 +145,32 @@ const CourseFormModal = ({ isOpen, onClose, mode, currentCourse }) => {
             {errors.description && (
               <p className="text-red-500 text-xs mt-1">
                 {errors.description.message}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-text-muted">
+              Kategori Kursus
+            </label>
+            <select
+              {...register('category', { required: 'Kategori wajib dipilih' })}
+              className="mt-1 block w-full border border-border rounded-md shadow-sm py-2 px-3"
+            >
+              <option value="">-- Pilih Kategori --</option>
+              {isLoadingCategories ? (
+                <option disabled>Memuat...</option>
+              ) : (
+                categories.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </option>
+                ))
+              )}
+            </select>
+            {errors.category && (
+              <p className="text-red-500 text-xs mt-1">
+                {errors.category.message}
               </p>
             )}
           </div>

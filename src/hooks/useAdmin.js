@@ -272,10 +272,12 @@ export const useStudentProgress = (courseId, userId) => {
 
 // Hook baru untuk mengambil notifikasi
 export const useNotifications = () => {
+  const { isAuthenticated } = useAuthStore();
   return useQuery({
     queryKey: ['notifications'],
     queryFn: notificationService.getNotifications,
     refetchOnWindowFocus: true, // Notifikasi biasanya butuh di-refresh
+    enabled: isAuthenticated,
   });
 };
 

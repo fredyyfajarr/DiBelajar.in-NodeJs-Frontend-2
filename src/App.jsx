@@ -46,6 +46,9 @@ const MaterialDetailPage = React.lazy(() =>
 const EnrollmentManagementPage = React.lazy(() =>
   import('/src/pages/admin/EnrollmentManagementPage.jsx')
 );
+const CategoryManagementPage = React.lazy(() =>
+  import('/src/pages/admin/CategoryManagementPage.jsx')
+);
 
 // Halaman Instruktur
 const InstructorEnrollmentPage = React.lazy(() =>
@@ -121,6 +124,7 @@ function App() {
                 path="courses/:courseId/analytics"
                 element={<CourseAnalyticsPage />}
               />
+              <Route path="categories" element={<CategoryManagementPage />} />
             </Route>
             {/* Rute Khusus Instruktur */}
             <Route
