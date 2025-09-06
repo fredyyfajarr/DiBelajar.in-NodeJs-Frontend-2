@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useCourses } from '/src/hooks/useCourses.js';
-import { useCategories } from '/src/hooks/useCategories.js'; // <-- Import hook
+import { useCategories } from '/src/hooks/useCategories.js';
 import { useSearchParams } from 'react-router-dom';
 import CourseCard from '/src/components/CourseCard.jsx';
 import Pagination from '/src/components/Pagination.jsx';
@@ -12,8 +12,9 @@ import 'react-loading-skeleton/dist/skeleton.css';
 
 const AllCoursesPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const { data: categories = [] } = useCategories(); // <-- Gunakan hook
+  const { data: categories = [] } = useCategories();
 
+  // State sekarang menyimpan slug atau string kosong
   const [page, setPage] = useState(parseInt(searchParams.get('page') || '1'));
   const [category, setCategory] = useState(searchParams.get('category') || '');
 
@@ -22,7 +23,7 @@ const AllCoursesPage = () => {
   const { data: response, isLoading } = useCourses({
     page,
     limit: coursesPerPage,
-    category: category, // Kirim ID kategori ke API
+    category: category, // Kirim slug kategori ke API
   });
 
   useEffect(() => {
@@ -32,8 +33,9 @@ const AllCoursesPage = () => {
     setSearchParams(params, { replace: true });
   }, [category, page, setSearchParams]);
 
-  const handleCategoryChange = (newCategoryId) => {
-    setCategory(newCategoryId);
+  // Fungsi ini sekarang menerima slug
+  const handleCategoryChange = (newCategorySlug) => {
+    setCategory(newCategorySlug);
     setPage(1);
   };
 
@@ -99,6 +101,7 @@ const AllCoursesPage = () => {
         </h1>
 
         <div className="flex flex-wrap justify-center gap-2 mb-12">
+          {/* Tombol 'Semua' sekarang mengirim string kosong */}
           <button
             onClick={() => handleCategoryChange('')}
             className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
@@ -109,12 +112,13 @@ const AllCoursesPage = () => {
           >
             Semua
           </button>
+          {/* Tombol kategori sekarang mengirim slug */}
           {categories.map((cat) => (
             <button
               key={cat._id}
-              onClick={() => handleCategoryChange(cat._id)}
+              onClick={() => handleCategoryChange(cat.slug)}
               className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
-                category === cat._id
+                category === cat.slug
                   ? 'bg-primary text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
               }`}
