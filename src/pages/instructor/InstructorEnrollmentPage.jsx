@@ -4,19 +4,29 @@ import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useEnrollmentsByCourse } from '/src/hooks/useAdmin.js';
+// --- 1. IMPORT HOOK BARU UNTUK MENGAMBIL DETAIL KURSUS ---
+import { useCourseDetail } from '/src/hooks/useCourses.js';
 
 const InstructorEnrollmentPage = () => {
   const { courseId } = useParams();
-  const { data: response, isLoading } = useEnrollmentsByCourse(courseId);
 
-  const enrollments = response?.data?.data || [];
-  const courseTitle =
-    enrollments.length > 0 ? enrollments[0].courseId?.title : 'Kursus';
+  // Ambil data pendaftar
+  const { data: enrollmentsResponse, isLoading: isLoadingEnrollments } =
+    useEnrollmentsByCourse(courseId);
+  // --- 2. AMBIL DATA DETAIL KURSUS SECARA TERPISAH ---
+  const { data: courseData, isLoading: isLoadingCourse } =
+    useCourseDetail(courseId);
+
+  const enrollments = enrollmentsResponse?.data?.data || [];
+  // --- 3. GUNAKAN JUDUL DARI DATA KURSUS, BUKAN DARI PENDAFTAR ---
+  const courseTitle = courseData?.course?.title || 'Memuat Nama Kursus...';
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.5 } },
   };
+
+  const isLoading = isLoadingEnrollments || isLoadingCourse;
 
   return (
     <motion.div
@@ -39,10 +49,13 @@ const InstructorEnrollmentPage = () => {
       </div>
       <div className="bg-white p-6 rounded-2xl shadow-md">
         {isLoading ? (
-          <p className="text-center py-4 text-gray-600">Memuat...</p>
+          <p className="text-center py-4 text-gray-600">
+            Memuat data pendaftar...
+          </p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full">
+              {/* ... (sisa kode tabel tidak berubah) ... */}
               <thead className="hidden md:table-header-group">
                 <tr className="border-b border-gray-200">
                   <th className="text-left p-3 font-semibold text-gray-700">
@@ -75,7 +88,6 @@ const InstructorEnrollmentPage = () => {
                         </span>
                         {enroll.userId?.email || 'N/A'}
                       </td>
-                      {/* --- PERBAIKAN DI SINI --- */}
                       <td className="p-3 block md:table-cell text-right md:text-left">
                         <span className="font-semibold md:hidden text-gray-700 float-left">
                           Aksi:
