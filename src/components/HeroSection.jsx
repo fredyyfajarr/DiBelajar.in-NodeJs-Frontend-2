@@ -7,7 +7,7 @@ import useAuthStore from '/src/store/authStore.js';
 const HeroSection = () => {
   const { openModal } = useModalStore();
   const { isAuthenticated } = useAuthStore();
-  const title = 'Belajar Skill Baru, Buka Peluang Baru';
+  const title = 'Platform Belajarnya Generasi Z';
   const words = title.split(' ');
 
   const containerVariants = {
@@ -173,29 +173,6 @@ const HeroSection = () => {
                 </motion.p>
               </>
             )}
-          </motion.div>
-
-          {/* Stats or Features */}
-          <motion.div
-            className="flex flex-wrap justify-center gap-8 mt-16 opacity-80"
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 0.8, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.8 }}
-          >
-            {[
-              { number: '10K+', label: 'Siswa Aktif' },
-              { number: '500+', label: 'Kursus Gratis' },
-              { number: '50+', label: 'Mentor Ahli' },
-            ].map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  {stat.number}
-                </div>
-                <div className="text-sm text-gray-600 font-medium mt-1">
-                  {stat.label}
-                </div>
-              </div>
-            ))}
           </motion.div>
         </div>
       </div>
