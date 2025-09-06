@@ -6,7 +6,7 @@ const features = [
   {
     icon: (
       <svg
-        className="w-12 h-12 text-primary"
+        className="w-12 h-12"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -15,23 +15,19 @@ const features = [
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={2}
-          d="M12 14l9-5-9-5-9 5 9 5z"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"
+          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
         />
       </svg>
     ),
     title: 'Instruktur Ahli',
     description: 'Belajar dari praktisi terbaik di industrinya.',
+    gradient: 'from-purple-500 to-purple-600',
+    bgGradient: 'from-purple-50 to-purple-100',
   },
   {
     icon: (
       <svg
-        className="w-12 h-12 text-primary"
+        className="w-12 h-12"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -40,17 +36,19 @@ const features = [
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={2}
-          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
         />
       </svg>
     ),
     title: 'Pembelajaran Fleksibel',
     description: 'Akses materi kapan saja sesuai kecepatan Anda.',
+    gradient: 'from-pink-500 to-rose-500',
+    bgGradient: 'from-pink-50 to-pink-100',
   },
   {
     icon: (
       <svg
-        className="w-12 h-12 text-primary"
+        className="w-12 h-12"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -59,12 +57,14 @@ const features = [
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={2}
-          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
         />
       </svg>
     ),
     title: 'Gratis Selamanya',
     description: '100% gratis tanpa biaya tersembunyi.',
+    gradient: 'from-purple-600 to-pink-600',
+    bgGradient: 'from-purple-50 to-pink-50',
   },
 ];
 
@@ -82,20 +82,62 @@ const FeaturesSection = () => {
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
 
+  const titleVariants = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  };
+
   return (
-    <div className="bg-gray-50 py-20">
-      <div className="container mx-auto px-4 sm:px-6">
-        <div className="text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Mengapa Memilih DiBelajar.in?
-          </h2>
-          <p className="text-lg text-gray-600 max-w-xl mx-auto">
-            Platform terbaik untuk meningkatkan skill Anda dengan cara yang
-            sederhana.
-          </p>
-        </div>
+    <div className="relative py-24 bg-transparent overflow-hidden">
+      {/* Background Decorations */}
+      <div className="absolute inset-0 opacity-40">
+        <div className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-br from-purple-300/30 to-pink-300/30 rounded-full blur-xl"></div>
+        <div className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-br from-pink-300/30 to-purple-300/30 rounded-full blur-xl"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-gradient-to-br from-purple-200/20 to-pink-200/20 rounded-full blur-2xl"></div>
+      </div>
+
+      <div className="relative z-10 container mx-auto px-4 sm:px-6">
         <motion.div
-          className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8"
+          className="text-center mb-20"
+          variants={titleVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
+          <motion.h2 
+            className="text-4xl md:text-6xl font-bold mb-6"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Mengapa Memilih
+            </span>
+            <br />
+            <span className="text-gray-800">DiBelajar.in?</span>
+          </motion.h2>
+          <motion.p 
+            className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            Platform terbaik untuk meningkatkan skill Anda dengan cara yang
+            sederhana dan menyenangkan.
+          </motion.p>
+          <motion.div
+            className="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto mt-8 rounded-full"
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            viewport={{ once: true }}
+          ></motion.div>
+        </motion.div>
+
+        <motion.div
+          className="grid grid-cols-1 md:grid-cols-3 gap-8"
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
@@ -105,16 +147,133 @@ const FeaturesSection = () => {
             <motion.div
               key={index}
               variants={cardVariants}
-              whileHover={{ scale: 1.05, transition: { duration: 0.3 } }}
-              className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 hover:border-primary transition-all duration-300 text-center"
+              whileHover={{ 
+                y: -15,
+                transition: { duration: 0.4, ease: "easeOut" } 
+              }}
+              className="group relative h-full"
             >
-              <div className="mx-auto mb-4">{feature.icon}</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                {feature.title}
-              </h3>
-              <p className="text-gray-600">{feature.description}</p>
+              {/* Animated Background Gradient */}
+              <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-white to-gray-50 shadow-2xl group-hover:shadow-purple-500/25 transition-all duration-500"></div>
+              
+              {/* Glowing Border Effect */}
+              <div className={`absolute -inset-0.5 bg-gradient-to-br ${feature.gradient} rounded-3xl opacity-0 group-hover:opacity-100 transition-all duration-500 blur-sm`}></div>
+              
+              {/* Inner Glow */}
+              <div className="absolute inset-1 rounded-3xl bg-white shadow-inner"></div>
+              
+              {/* Main Content */}
+              <div className="relative z-20 p-10 h-full flex flex-col items-center text-center">
+                {/* Floating Icon with Complex Animation */}
+                <motion.div
+                  className="relative mb-8"
+                  animate={{
+                    y: [0, -8, 0],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: index * 0.5
+                  }}
+                >
+                  {/* Icon Glow Background */}
+                  <div className={`absolute inset-0 w-20 h-20 bg-gradient-to-br ${feature.gradient} rounded-full opacity-20 blur-xl group-hover:opacity-40 transition-opacity duration-300`}></div>
+                  
+                  {/* Icon Container */}
+                  <motion.div
+                    className={`relative w-20 h-20 rounded-2xl bg-gradient-to-br ${feature.bgGradient} flex items-center justify-center border border-white shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}
+                    whileHover={{ 
+                      boxShadow: "0 20px 40px rgba(139, 92, 246, 0.3)",
+                    }}
+                  >
+                    <div className={`bg-gradient-to-br ${feature.gradient} bg-clip-text text-transparent`}>
+                      {React.cloneElement(feature.icon, {
+                        className: `w-10 h-10`,
+                        style: { 
+                          background: `linear-gradient(135deg, #8B5CF6, #EC4899)`,
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                          backgroundClip: 'text'
+                        }
+                      })}
+                    </div>
+                  </motion.div>
+
+                  {/* Floating Particles */}
+                  <motion.div
+                    className="absolute -top-2 -right-2 w-3 h-3 bg-gradient-to-br from-purple-400 to-pink-400 rounded-full"
+                    animate={{
+                      scale: [1, 1.5, 1],
+                      opacity: [0.5, 1, 0.5]
+                    }}
+                    transition={{
+                      duration: 2,
+                      repeat: Infinity,
+                      delay: index * 0.3
+                    }}
+                  />
+                </motion.div>
+
+                {/* Title with Hover Effect */}
+                <motion.h3 
+                  className="text-2xl font-bold mb-4 group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-pink-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300"
+                  initial={{ color: '#1F2937' }}
+                >
+                  {feature.title}
+                </motion.h3>
+
+                {/* Description */}
+                <p className="text-gray-600 leading-relaxed text-lg group-hover:text-gray-700 transition-colors duration-300 flex-grow">
+                  {feature.description}
+                </p>
+
+                {/* Interactive Bottom Bar */}
+                <motion.div
+                  className={`mt-8 w-16 h-1 bg-gradient-to-r ${feature.gradient} rounded-full opacity-0 group-hover:opacity-100 group-hover:w-24 transition-all duration-500`}
+                />
+
+                {/* Corner Decorations */}
+                <div className="absolute top-6 right-6 w-2 h-2 bg-gradient-to-br from-purple-400/50 to-pink-400/50 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 animate-pulse"></div>
+                <div className="absolute bottom-6 left-6 w-1.5 h-1.5 bg-gradient-to-br from-pink-400/50 to-purple-400/50 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+              </div>
+
+              {/* Subtle Pattern Overlay */}
+              <div className="absolute inset-0 rounded-3xl opacity-5 group-hover:opacity-10 transition-opacity duration-300"
+                style={{
+                  backgroundImage: `radial-gradient(circle at 50% 50%, #8B5CF6 1px, transparent 1px)`,
+                  backgroundSize: '20px 20px'
+                }}
+              />
             </motion.div>
           ))}
+        </motion.div>
+
+        {/* Bottom CTA */}
+        <motion.div
+          className="text-center mt-16"
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          viewport={{ once: true }}
+        >
+          <p className="text-lg text-gray-600 mb-6">
+            Siap memulai perjalanan belajar Anda?
+          </p>
+          <motion.button
+            className="inline-flex items-center px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Jelajahi Kursus
+            <motion.span
+              className="ml-2"
+              animate={{ x: [0, 5, 0] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            >
+              →
+            </motion.span>
+          </motion.button>
         </motion.div>
       </div>
     </div>

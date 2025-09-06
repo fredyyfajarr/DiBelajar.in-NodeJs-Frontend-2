@@ -1,73 +1,79 @@
-/* eslint-disable no-unused-vars */
-import React from 'react';
-import { motion } from 'framer-motion';
+import { BookOpen, Mail, Phone, MapPin } from 'lucide-react'
 
-const Footer = () => {
-  const linkVariants = {
-    hover: { scale: 1.1, transition: { duration: 0.3 } },
-    tap: { scale: 0.95 },
-  };
-
+export default function Footer() {
   return (
-    <footer className="bg-white border-t border-gray-800 mt-auto">
-      <div className="container mx-auto px-4 sm:px-6 py-6 text-center text-gray-400">
-        <p>
-          &copy; {new Date().getFullYear()} Isaachuu ft Caiden All Rights
-          Reserved.
-        </p>
-        <div className="flex justify-center space-x-6 mt-4">
-          <motion.a
-            href="#"
-            variants={linkVariants}
-            whileHover="hover"
-            whileTap="tap"
-            className="text-black-400 hover:text-black transition-colors duration-200"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              aria-label="Facebook"
-            >
-              <path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116c.732 0 1.325-.593 1.325-1.325V1.325C24 .593 23.407 0 22.675 0z" />
-            </svg>
-          </motion.a>
-          <motion.a
-            href="#"
-            variants={linkVariants}
-            whileHover="hover"
-            whileTap="tap"
-            className="text-black-400 hover:text-black transition-colors duration-200"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              aria-label="Twitter"
-            >
-              <path d="M24 4.557a9.83 9.83 0 01-2.828.775 4.932 4.932 0 002.165-2.724 9.864 9.864 0 01-3.127 1.195 4.916 4.916 0 00-8.384 4.482A13.956 13.956 0 011.671 3.149a4.914 4.914 0 001.524 6.557 4.903 4.903 0 01-2.229-.616v.062a4.918 4.918 0 003.946 4.827 4.925 4.925 0 01-2.224.085 4.918 4.918 0 004.587 3.419 9.848 9.848 0 01-6.102 2.105c-.4 0-.79-.023-1.175-.068a13.935 13.935 0 007.542 2.209c9.055 0 14.01-7.496 14.01-13.986 0-.213 0-.425-.015-.636A9.936 9.936 0 0024 4.557z" />
-            </svg>
-          </motion.a>
-          <motion.a
-            href="#"
-            variants={linkVariants}
-            whileHover="hover"
-            whileTap="tap"
-            className="text-black-400 hover:text-black transition-colors duration-200"
-          >
-            <svg
-              className="w-5 h-5"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-              aria-label="Instagram"
-            >
-              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 1.366.062 2.233.308 2.686.644.465.334.816.749 1.165 1.198.35.448.607.801.81 1.236.204.434.376.892.488 1.388.112.497.171.976.171 1.803v7.049c0 .827-.059 1.306-.171 1.803-.112.496-.284.954-.488 1.388-.203.435-.46.788-.81 1.236-.349.449-.7.864-1.165 1.198-.453.336-1.32.582-2.686.644-1.266.058-1.646.07-4.85.07-3.204 0-3.584-.012-4.85-.07-1.366-.062-2.233-.308-2.686-.644-.465-.334-.816-.749-1.165-1.198-.35-.448-.607-.801-.81-1.236-.204-.434-.376-.892-.488-1.388-.112-.497-.171-.976-.171-1.803V7.104c0-.827.059-1.306.171-1.803.112-.496.284-.954.488-1.388.203-.435.46-.788.81-1.236.349-.449.7-.864 1.165-1.198.453-.336 1.32-.582 2.686-.644 1.266-.058 1.646-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-1.254.057-2.08.265-2.812.621-.727.353-1.325.815-1.904 1.394-.579.579-1.041 1.177-1.394 1.904-.356.732-.564 1.558-.621 2.812-.058 1.28-.072 1.689-.072 4.947 0 3.259.014 3.667.072 4.947.057 1.254.265 2.08.621 2.812.353.727.815 1.325 1.394 1.904.579.579 1.177 1.041 1.904 1.394.732.356 1.558.564 2.812.621 1.28.058 1.689.072 4.947.072 3.259 0 3.667-.014 4.947-.072 1.254-.057 2.08-.265 2.812-.621.727-.353 1.325-.815 1.904-1.394.579-.579 1.041-1.177 1.394-1.904.356-.732.564-1.558.621-2.812.058-1.28.072-1.689.072-4.947 0-3.259-.014-3.667-.072-4.947-.057-1.254-.265-2.08-.621-2.812-.353-.727-.815-1.325-1.394-1.904-.579-.579-1.177-1.041-1.904-1.394-.732-.356-1.558-.564-2.812-.621-1.28-.058-1.689-.072-4.947-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4zm6.406-11.845a1.44 1.44 0 100-2.88 1.44 1.44 0 000 2.88z" />
-            </svg>
-          </motion.a>
+    <footer className="bg-white text-gray-700">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* Brand */}
+          <div className="col-span-1 md:col-span-2">
+            <div className="flex items-center space-x-2 mb-4">
+              <BookOpen className="h-8 w-8 text-violet-600" />
+              <span className="text-xl font-bold text-gray-900">DiBelajar.in</span>
+            </div>
+            <p className="text-gray-600 mb-4">
+              Platform pembelajaran online terbaik untuk mengembangkan skill dan pengetahuan Anda. 
+              Bergabunglah dengan ribuan pelajar lainnya dan raih kesuksesan bersama kami.
+            </p>
+            <div className="flex space-x-4">
+              <a href="#" className="text-gray-500 hover:text-violet-600 transition-colors">
+                {/* Twitter */}
+                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M24 4.557c-.883.392-1.832.656-2.828.775..." />
+                </svg>
+              </a>
+              <a href="#" className="text-gray-500 hover:text-violet-600 transition-colors">
+                {/* Instagram */}
+                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M22.46 6c-.77.35-1.6.58-2.46.69..." />
+                </svg>
+              </a>
+              <a href="#" className="text-gray-500 hover:text-violet-600 transition-colors">
+                {/* LinkedIn */}
+                <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M20.447 20.452h-3.554v-5.569..." />
+                </svg>
+              </a>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Links</h3>
+            <ul className="space-y-2">
+              <li><a href="/courses" className="text-gray-600 hover:text-violet-600 transition-colors">Courses</a></li>
+              <li><a href="/about" className="text-gray-600 hover:text-violet-600 transition-colors">About Us</a></li>
+              <li><a href="/contact" className="text-gray-600 hover:text-violet-600 transition-colors">Contact</a></li>
+              <li><a href="/help" className="text-gray-600 hover:text-violet-600 transition-colors">Help Center</a></li>
+            </ul>
+          </div>
+
+          {/* Contact Info */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Contact Info</h3>
+            <div className="space-y-3">
+              <div className="flex items-center space-x-2">
+                <Mail className="h-4 w-4 text-violet-600" />
+                <span className="text-gray-600">info@dibelajar.in</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Phone className="h-4 w-4 text-violet-600" />
+                <span className="text-gray-600">+62 21 1234 5678</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <MapPin className="h-4 w-4 text-violet-600" />
+                <span className="text-gray-600">Jakarta, Indonesia</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="border-t border-gray-200 mt-8 pt-8 text-center">
+          <p className="text-gray-500 text-sm">
+            © {new Date().getFullYear()} DiBelajar.in. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>
-  );
-};
-
-export default Footer;
+  )
+}

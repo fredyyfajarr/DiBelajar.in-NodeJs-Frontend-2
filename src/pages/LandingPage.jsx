@@ -47,10 +47,17 @@ const LandingPage = () => {
       );
     }
     return (
-      <h2 className="text-3xl font-bold text-gray-800 mb-8">
-        Kursus Populer Pilihan
-      </h2>
-    );
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-800">
+            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              Kursus Populer
+            </span>
+            {' '}
+            Pilihan
+          </h2>
+          <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto mt-4 rounded-full"></div>
+        </div>
+      );
   };
 
   const renderContent = () => {

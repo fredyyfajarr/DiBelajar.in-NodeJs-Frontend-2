@@ -28,60 +28,191 @@ const HeroSection = () => {
     visible: { y: 0, opacity: 1, transition: { delay: 0.5, duration: 0.6 } },
   };
 
+  const floatingElements = [
+    { size: 'w-20 h-20', position: 'top-10 left-10', delay: 0 },
+    { size: 'w-16 h-16', position: 'top-1/4 right-16', delay: 1 },
+    { size: 'w-12 h-12', position: 'bottom-20 left-1/4', delay: 2 },
+    { size: 'w-14 h-14', position: 'bottom-32 right-20', delay: 1.5 },
+  ];
+
   return (
-    <div
-      className="bg-gradient-to-r from-blue-50 to-white min-h-[60vh] flex items-center"
-      style={{
-        backgroundImage: 'linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%)',
-      }}
-    >
-      <div className="container mx-auto px-4 sm:px-6 text-center">
-        <motion.h1
-          className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight mb-6 font-sans"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {words.map((word, index) => (
-            <motion.span
-              key={index}
-              variants={wordVariants}
-              className="inline-block mr-2"
-            >
-              {word}
-            </motion.span>
-          ))}
-        </motion.h1>
-        <motion.p
-          className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6, duration: 0.5 }}
-        >
-          Akses ribuan kursus gratis dari para ahli dan tingkatkan karir Anda
-          dengan fleksibilitas penuh.
-        </motion.p>
+    <div className="relative min-h-[80vh] overflow-hidden bg-transparent">
+      {/* Animated Background Pattern */}
+      <div className="absolute inset-0 opacity-30">
+        <div className="absolute inset-0 bg-transparent"></div>
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <radialGradient id="grad1" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stopColor="#8B5CF6" stopOpacity="0.1"/>
+              <stop offset="100%" stopColor="#EC4899" stopOpacity="0.05"/>
+            </radialGradient>
+          </defs>
+          <circle cx="200" cy="200" r="150" fill="url(#grad1)"/>
+          <circle cx="800" cy="300" r="120" fill="url(#grad1)"/>
+          <circle cx="600" cy="700" r="100" fill="url(#grad1)"/>
+        </svg>
+      </div>
+
+      {/* Floating Elements */}
+      {floatingElements.map((el, index) => (
         <motion.div
-          variants={buttonVariants}
-          initial="hidden"
-          animate="visible"
+          key={index}
+          className={`absolute ${el.size} ${el.position} bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-sm`}
+          animate={{
+            y: [0, -20, 0],
+            rotate: [0, 180, 360],
+            scale: [1, 1.1, 1],
+          }}
+          transition={{
+            duration: 6,
+            repeat: Infinity,
+            delay: el.delay,
+            ease: "easeInOut"
+          }}
+        />
+      ))}
+
+      {/* Main Content */}
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 flex items-center justify-center min-h-[80vh]">
+        <div className="text-center max-w-5xl">
+          {/* Main Title */}
+          <motion.h1
+            className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight mb-8"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {words.map((word, index) => (
+              <motion.span
+                key={index}
+                variants={wordVariants}
+                className={`inline-block mr-3 ${
+                  index % 2 === 0 
+                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent' 
+                    : 'text-gray-800'
+                }`}
+                style={{
+                  fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+                  fontWeight: '800',
+                }}
+              >
+                {word}
+              </motion.span>
+            ))}
+          </motion.h1>
+
+          {/* Subtitle */}
+          <motion.div
+            className="mb-12"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.6 }}
+          >
+            <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed font-medium">
+              Akses ribuan kursus gratis dari para ahli dan tingkatkan karir Anda
+              dengan fleksibilitas penuh.
+            </p>
+            <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto mt-6 rounded-full"></div>
+          </motion.div>
+
+          {/* Conditional CTA Button Section */}
+          <motion.div
+            variants={buttonVariants}
+            initial="hidden"
+            animate="visible"
+            className="space-y-4"
+          >
+            {isAuthenticated ? (
+              // Jika pengguna sudah login
+              <motion.a
+                href="/courses" // Mengarahkan ke halaman kursus
+                className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white bg-gradient-to-r from-purple-600 to-pink-600 rounded-full shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-purple-600 to-pink-600 rounded-full blur opacity-30 group-hover:opacity-50 transition-opacity duration-300"></span>
+                <span className="relative">
+                  Jelajahi Kursus Populer
+                </span>
+                 <motion.span
+                  className="ml-2"
+                  animate={{ x: [0, 5, 0] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                >
+                  →
+                </motion.span>
+              </motion.a>
+            ) : (
+              // Jika pengguna belum login
+              <>
+                <motion.button
+                  onClick={() => openModal('REGISTER')}
+                  className="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white bg-gradient-to-r from-purple-600 to-pink-600 rounded-full shadow-2xl hover:shadow-purple-500/25 transition-all duration-300 transform hover:scale-105"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-purple-600 to-pink-600 rounded-full blur opacity-30 group-hover:opacity-50 transition-opacity duration-300"></span>
+                  <span className="relative">
+                    Mulai Belajar Sekarang
+                  </span>
+                  <motion.span
+                    className="ml-2"
+                    animate={{ x: [0, 5, 0] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                  >
+                    →
+                  </motion.span>
+                </motion.button>
+                <motion.p
+                  className="text-sm text-gray-500"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2, duration: 0.5 }}
+                >
+                  Gratis untuk memulai • Tidak perlu kartu kredit
+                </motion.p>
+              </>
+            )}
+          </motion.div>
+
+          {/* Stats or Features */}
+          <motion.div
+            className="flex flex-wrap justify-center gap-8 mt-16 opacity-80"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 0.8, y: 0 }}
+            transition={{ delay: 1.2, duration: 0.8 }}
+          >
+            {[
+              { number: '10K+', label: 'Siswa Aktif' },
+              { number: '500+', label: 'Kursus Gratis' },
+              { number: '50+', label: 'Mentor Ahli' },
+            ].map((stat, index) => (
+              <div key={index} className="text-center">
+                <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  {stat.number}
+                </div>
+                <div className="text-sm text-gray-600 font-medium mt-1">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </div>
+
+      {/* Bottom Wave */}
+      <div className="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
+        <svg
+          className="relative block w-full h-20"
+          viewBox="0 0 1200 120"
+          preserveAspectRatio="none"
         >
-          {isAuthenticated ? (
-            <a
-              href="#popular-courses"
-              className="bg-primary text-white px-6 py-3 rounded-full font-semibold text-lg shadow-lg hover:bg-opacity-90 transition-all duration-300"
-            >
-              Jelajahi Kursus Populer
-            </a>
-          ) : (
-            <button
-              onClick={() => openModal('REGISTER')}
-              className="bg-primary text-white px-6 py-3 rounded-full font-semibold text-lg shadow-lg hover:bg-opacity-90 transition-all duration-300"
-            >
-              Mulai Belajar Sekarang
-            </button>
-          )}
-        </motion.div>
+          <path
+            d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+            fill="white"
+            opacity="0.8"
+          ></path>
+        </svg>
       </div>
     </div>
   );
