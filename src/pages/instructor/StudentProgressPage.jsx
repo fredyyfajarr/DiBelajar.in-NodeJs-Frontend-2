@@ -5,7 +5,6 @@ import { useParams, Link } from 'react-router-dom';
 import { useStudentProgress } from '/src/hooks/useAdmin.js';
 import { motion } from 'framer-motion';
 
-// Komponen kecil untuk menampilkan status setiap materi
 const ProgressItem = ({ material, progressStatus }) => {
   const isCompleted = progressStatus?.isCompleted || false;
 
@@ -50,25 +49,31 @@ const ProgressItem = ({ material, progressStatus }) => {
 };
 
 const StudentProgressPage = () => {
-  const { courseId, userId } = useParams(); // Ambil courseId dan userId dari URL
+  const { courseId, userId } = useParams();
   const {
     data: response,
     isLoading,
     isError,
   } = useStudentProgress(courseId, userId);
 
-  const studentName = response?.data?.data?.enrollment?.userId?.name || 'Siswa';
-  const courseTitle =
-    response?.data?.data?.enrollment?.courseId?.title || 'Kursus';
-  const allMaterials = response?.data?.data?.allMaterialsInCourse || [];
-  const studentProgress = response?.data?.data?.enrollment?.progress || [];
+  // --- PERBAIKAN DI SINI ---
+  // Pindahkan logika pengambilan data ke bawah setelah pengecekan isLoading
 
   if (isLoading) {
     return <div className="text-center py-10">Memuat progres siswa...</div>;
   }
-  if (isError) {
+
+  const studentName = response?.data?.data?.enrollment?.userId?.name;
+  const courseTitle = response?.data?.data?.enrollment?.courseId?.title;
+  const allMaterials = response?.data?.data?.allMaterialsInCourse || [];
+  const studentProgress = response?.data?.data?.enrollment?.progress || [];
+
+  if (isError || !studentName) {
+    // Tambahkan pengecekan !studentName
     return (
-      <div className="text-center py-10 text-red-500">Gagal memuat data.</div>
+      <div className="text-center py-10 text-red-500">
+        Gagal memuat data. Pastikan URL benar.
+      </div>
     );
   }
 
@@ -85,6 +90,7 @@ const StudentProgressPage = () => {
         >
           &larr; Kembali ke Daftar Pendaftar
         </Link>
+        {/* Sekarang data ini dijamin sudah ada */}
         <h1 className="text-3xl font-bold text-gray-900 mt-1">
           Progres Belajar: <span className="font-normal">{studentName}</span>
         </h1>

@@ -81,7 +81,7 @@ const InstructorEnrollmentPage = () => {
                           Aksi:
                         </span>
                         <Link
-                          to={`/instructor/courses/${courseId}/student-progress/${enroll.userId?._id}`}
+                          to={`/instructor/courses/${courseId}/student-progress/${enroll.userId?.slug}`}
                           className="text-primary hover:underline font-medium"
                         >
                           Lihat Progres
