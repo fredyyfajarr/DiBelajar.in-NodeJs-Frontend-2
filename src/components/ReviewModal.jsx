@@ -1,12 +1,12 @@
-// src/components/ReviewModal.jsx
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import Modal from './Modal';
-import { useAddReview } from '/src/hooks/useStudent.js'; // Hook yang sudah kita buat
-import { useParams } from 'react-router-dom';
+import {
+  useAddReview,
+  useUpdateReview,
+  useDeleteReview,
+} from '/src/hooks/useStudent.js';
 
-// Komponen kecil untuk rating bintang yang interaktif
 const StarRating = ({ rating, setRating }) => {
   return (
     <div className="flex justify-center space-x-1">
@@ -27,15 +27,36 @@ const StarRating = ({ rating, setRating }) => {
   );
 };
 
-const ReviewModal = ({ isOpen, onClose, courseSlug }) => {
+const ReviewModal = ({
+  isOpen,
+  onClose,
+  courseSlug,
+  mode = 'add',
+  currentReview,
+}) => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
   const [rating, setRating] = useState(0);
 
-  const { mutate: addReview, isPending } = useAddReview();
+  const { mutate: addReview, isPending: isAdding } = useAddReview();
+  const { mutate: updateReview, isPending: isUpdating } = useUpdateReview();
+  const { mutate: deleteReview, isPending: isDeleting } = useDeleteReview();
+
+  useEffect(() => {
+    // console.log('currentReview di useEffect:', currentReview); // Tambahkan log ini
+    if (mode === 'edit' && currentReview) {
+      reset({ comment: currentReview.comment || '' });
+      setRating(currentReview.rating || 0);
+      // console.log('Rating diatur ke:', currentReview.rating || 0); // Tambahkan log ini
+    } else {
+      reset({ comment: '' });
+      setRating(0);
+    }
+  }, [mode, currentReview, reset, isOpen]);
 
   const onSubmit = (data) => {
     if (rating === 0) {
@@ -43,22 +64,42 @@ const ReviewModal = ({ isOpen, onClose, courseSlug }) => {
       return;
     }
     const reviewData = { rating, comment: data.comment };
-    addReview(
-      { courseSlug, reviewData },
-      {
-        onSuccess: () => {
-          setRating(0); // Reset rating
-          onClose(); // Tutup modal
-        },
-      }
-    );
+
+    if (mode === 'edit') {
+      updateReview(
+        { courseSlug, reviewData },
+        {
+          onSuccess: () => {
+            onClose();
+          },
+        }
+      );
+    } else {
+      addReview(
+        { courseSlug, reviewData },
+        {
+          onSuccess: () => {
+            setRating(0);
+            onClose();
+          },
+        }
+      );
+    }
   };
+
+  const handleDelete = () => {
+    if (window.confirm('Apakah Anda yakin ingin menghapus ulasan ini?')) {
+      deleteReview(courseSlug, { onSuccess: onClose });
+    }
+  };
+
+  const isPending = isAdding || isUpdating || isDeleting;
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="p-8 w-full max-w-lg">
         <h2 className="text-2xl font-bold mb-4 text-center text-text-primary">
-          Tulis Ulasan Anda
+          {mode === 'edit' ? 'Edit Ulasan Anda' : 'Tulis Ulasan Anda'}
         </h2>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
@@ -93,21 +134,37 @@ const ReviewModal = ({ isOpen, onClose, courseSlug }) => {
               </p>
             )}
           </div>
-          <div className="flex justify-end gap-3">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300"
-            >
-              Batal
-            </button>
-            <button
-              type="submit"
-              disabled={isPending}
-              className="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:opacity-90 disabled:opacity-50"
-            >
-              {isPending ? 'Mengirim...' : 'Kirim Ulasan'}
-            </button>
+          <div className="flex justify-between gap-3">
+            {mode === 'edit' && (
+              <button
+                type="button"
+                onClick={handleDelete}
+                disabled={isPending}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg font-medium hover:bg-red-700 disabled:opacity-50"
+              >
+                {isDeleting ? 'Menghapus...' : 'Hapus Ulasan'}
+              </button>
+            )}
+            <div className="flex-1 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300"
+              >
+                Batal
+              </button>
+              <button
+                type="submit"
+                disabled={isPending}
+                className="px-4 py-2 bg-primary text-white rounded-lg font-medium hover:opacity-90 disabled:opacity-50"
+              >
+                {isPending
+                  ? 'Mengirim...'
+                  : mode === 'edit'
+                  ? 'Simpan Perubahan'
+                  : 'Kirim Ulasan'}
+              </button>
+            </div>
           </div>
         </form>
       </div>

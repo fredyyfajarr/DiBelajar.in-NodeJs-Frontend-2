@@ -7,6 +7,7 @@ const enrollInCourse = (courseId) => {
 const getMyEnrollments = (userId) => {
   return axiosInstance.get(`/users/${userId}/enrollments`);
 };
+
 const submitAssignment = ({ courseId, materialId, formData }) => {
   return axiosInstance.post(
     `/courses/${courseId}/materials/${materialId}/assignments`,
@@ -21,19 +22,12 @@ const submitTestResult = ({ courseId, materialId, resultData }) => {
   );
 };
 
-/**
- * Mengambil semua postingan forum untuk sebuah materi.
- */
 const getForumPosts = ({ courseId, materialId }) => {
   return axiosInstance.get(
     `/courses/${courseId}/materials/${materialId}/forum/posts`
   );
 };
 
-/**
- * Membuat postingan baru di forum.
- * @param {Object} payload - Berisi courseId, materialId, dan data post { text }.
- */
 const createForumPost = ({ courseId, materialId, postData }) => {
   return axiosInstance.post(
     `/courses/${courseId}/materials/${materialId}/forum/posts`,
@@ -42,7 +36,6 @@ const createForumPost = ({ courseId, materialId, postData }) => {
 };
 
 const updateProgress = ({ courseId, materialId, step }) => {
-  // Kita hanya perlu mengirim 'step', courseId dan materialId sudah ada di URL
   return axiosInstance.put(
     `/courses/${courseId}/materials/${materialId}/progress`,
     { step }
@@ -57,8 +50,25 @@ const getReviewsByCourse = (courseSlug) => {
   return axiosInstance.get(`/courses/${courseSlug}/reviews`);
 };
 
+const getMyReview = (courseSlug) => {
+  return axiosInstance
+    .get(`/courses/${courseSlug}/reviews/my`)
+    .then((response) => {
+      // console.log('Respons API getMyReview:', response.data); // Tambahkan log ini
+      return response;
+    });
+};
+
 const addReview = ({ courseSlug, reviewData }) => {
   return axiosInstance.post(`/courses/${courseSlug}/reviews`, reviewData);
+};
+
+const updateReview = ({ courseSlug, reviewData }) => {
+  return axiosInstance.put(`/courses/${courseSlug}/reviews/my`, reviewData);
+};
+
+const deleteReview = (courseSlug) => {
+  return axiosInstance.delete(`/courses/${courseSlug}/reviews/my`);
 };
 
 export default {
@@ -72,4 +82,7 @@ export default {
   getCertificateData,
   getReviewsByCourse,
   addReview,
+  getMyReview,
+  updateReview,
+  deleteReview,
 };

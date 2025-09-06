@@ -1,20 +1,27 @@
-// src/pages/student/StudentDashboardPage.jsx
-
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import useAuthStore from '/src/store/authStore.js';
-import { useMyEnrollments } from '/src/hooks/useStudent.js';
+import { useMyEnrollments, useMyReview } from '/src/hooks/useStudent.js';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import ReviewModal from '/src/components/ReviewModal.jsx';
 
-// --- PERBAIKAN 1: Terima 'handleOpenReviewModal' sebagai prop ---
 const CourseItem = ({ enrollment, handleOpenReviewModal }) => {
   const cardVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
     hover: { scale: 1.03, transition: { duration: 0.2 } },
   };
+
+  const courseSlug = enrollment.courseId.slug || enrollment.courseId._id;
+  const { data: reviewResponse, isLoading: isReviewLoading } =
+    useMyReview(courseSlug);
+  const myReview = reviewResponse?.data;
+  // console.log('myReview dari useMyReview:', myReview); // Tambahkan log in
+
+  const hasReviewed = !!myReview;
+  const buttonText = hasReviewed ? 'Edit Ulasan' : 'Beri Ulasan';
+  const modalMode = hasReviewed ? 'edit' : 'add';
 
   return (
     <motion.div
@@ -25,10 +32,7 @@ const CourseItem = ({ enrollment, handleOpenReviewModal }) => {
       viewport={{ once: true }}
       className="bg-white p-5 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 border border-gray-100 flex flex-col justify-between"
     >
-      <Link
-        to={`/learn/${enrollment.courseId.slug || enrollment.courseId._id}`}
-        className="block"
-      >
+      <Link to={`/learn/${courseSlug}`} className="block">
         <div className="flex items-center gap-4">
           <img
             src={enrollment.courseId.thumbnail}
@@ -50,13 +54,12 @@ const CourseItem = ({ enrollment, handleOpenReviewModal }) => {
         <div className="mt-4 pt-4 border-t border-gray-100">
           <button
             onClick={() =>
-              handleOpenReviewModal(
-                enrollment.courseId.slug || enrollment.courseId._id
-              )
+              handleOpenReviewModal(courseSlug, modalMode, myReview)
             }
-            className="w-full text-center bg-gray-100 text-gray-800 font-semibold py-2 rounded-lg hover:bg-gray-200 transition-colors"
+            disabled={isReviewLoading}
+            className="w-full text-center bg-gray-100 text-gray-800 font-semibold py-2 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
           >
-            Beri Ulasan
+            {isReviewLoading ? 'Memuat...' : buttonText}
           </button>
         </div>
       )}
@@ -69,17 +72,30 @@ const StudentDashboardPage = () => {
   const { data: response, isLoading } = useMyEnrollments(user._id);
   const enrollments = response?.data?.data || [];
 
-  const [isReviewModalOpen, setReviewModalOpen] = useState(false);
-  const [selectedCourseSlug, setSelectedCourseSlug] = useState(null);
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    mode: 'add',
+    courseSlug: null,
+    currentReview: null,
+  });
 
-  const handleOpenReviewModal = (slug) => {
-    setSelectedCourseSlug(slug);
-    setReviewModalOpen(true);
+  const handleOpenReviewModal = (slug, mode, review) => {
+    // console.log('Data review yang dikirim:', review); // Tambahkan log ini
+    setModalState({
+      isOpen: true,
+      mode,
+      courseSlug: slug,
+      currentReview: review,
+    });
   };
 
   const handleCloseReviewModal = () => {
-    setSelectedCourseSlug(null);
-    setReviewModalOpen(false);
+    setModalState({
+      isOpen: false,
+      mode: 'add',
+      courseSlug: null,
+      currentReview: null,
+    });
   };
 
   const containerVariants = {
@@ -130,7 +146,6 @@ const StudentDashboardPage = () => {
           )}
           {!isLoading &&
             enrollments.map((enroll) => (
-              // --- PERBAIKAN 2: Kirim 'handleOpenReviewModal' sebagai prop ---
               <CourseItem
                 key={enroll._id}
                 enrollment={enroll}
@@ -139,13 +154,13 @@ const StudentDashboardPage = () => {
             ))}
         </div>
       </motion.div>
-      {selectedCourseSlug && (
-        <ReviewModal
-          isOpen={isReviewModalOpen}
-          onClose={handleCloseReviewModal}
-          courseSlug={selectedCourseSlug}
-        />
-      )}
+      <ReviewModal
+        isOpen={modalState.isOpen}
+        onClose={handleCloseReviewModal}
+        courseSlug={modalState.courseSlug}
+        mode={modalState.mode}
+        currentReview={modalState.currentReview}
+      />
     </>
   );
 };

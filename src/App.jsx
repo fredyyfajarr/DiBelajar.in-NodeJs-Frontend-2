@@ -126,7 +126,7 @@ function App() {
               <Route
                 path="courses/:courseId/student-progress/:userId"
                 element={<StudentProgressPage />}
-            />
+              />
             </Route>
           </Route>
         </Route>
