@@ -47,6 +47,7 @@ const ProgressItem = ({ material, progressStatus }) => {
 };
 
 const StudentProgressPage = () => {
+  // Ambil course slug dan student slug dari URL
   const { courseId: courseSlug, userId: userSlug } = useParams();
   const {
     data: response,
@@ -59,7 +60,7 @@ const StudentProgressPage = () => {
     return <div className="text-center py-10">Memuat progres siswa...</div>;
   }
 
-  // Tampilkan pesan error jika terjadi kegagalan
+  // Tampilkan pesan error jika terjadi kegagalan fetching
   if (isError) {
     return (
       <div className="text-center py-10 text-red-500">
@@ -100,6 +101,7 @@ const StudentProgressPage = () => {
         <div className="space-y-3">
           {allMaterials.map((material) => {
             const progressStatus = studentProgress.find(
+              // Pastikan perbandingan ID aman
               (p) => p.materialId?._id === material._id
             );
             return (
