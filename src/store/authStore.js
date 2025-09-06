@@ -12,6 +12,10 @@ const useAuthStore = create(
       // Aksi untuk menyimpan data setelah login berhasil
       login: (userData, token) =>
         set({ user: userData, token, isAuthenticated: true }),
+      updateUser: (newUserData) =>
+        set((state) => ({
+          user: { ...state.user, ...newUserData },
+        })),
       // Aksi untuk membersihkan data setelah logout
       logout: () => {
         set({ user: null, token: null, isAuthenticated: false });

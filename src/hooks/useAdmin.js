@@ -289,3 +289,11 @@ export const useMarkNotificationAsRead = () => {
     },
   });
 };
+
+export const useCourseAnalytics = (courseId) => {
+  return useQuery({
+    queryKey: ['analytics', courseId],
+    queryFn: () => adminService.getCourseAnalytics(courseId),
+    enabled: !!courseId,
+  });
+};

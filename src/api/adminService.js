@@ -101,6 +101,11 @@ export const getEnrollmentsByCourse = (courseId) => {
 export const getStudentProgress = (courseId, userId) => {
   return axiosInstance.get(`/courses/${courseId}/enrollments/${userId}`);
 };
+
+export const getCourseAnalytics = (courseId) => {
+  return axiosInstance.get(`/courses/${courseId}/analytics`);
+};
+
 // Gabungkan semua fungsi untuk diekspor
 const adminService = {
   getAllUsers,
@@ -125,6 +130,7 @@ const adminService = {
   getEnrollmentsByCourse,
   getInstructorCourses,
   getStudentProgress,
+  getCourseAnalytics,
 };
 
 export default adminService;

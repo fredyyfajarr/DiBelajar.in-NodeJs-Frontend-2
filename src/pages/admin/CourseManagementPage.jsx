@@ -126,14 +126,24 @@ const CourseManagementPage = () => {
                         Aksi:
                       </span>
                       {user?.role === 'instructor' && (
-                        <Link
-                          to={`/${
-                            user?.role === 'admin' ? 'admin' : 'instructor'
-                          }/courses/${course.slug || course._id}/enrollments`}
-                          className="text-purple-600 hover:underline mr-4 font-medium"
-                        >
-                          Pendaftar
-                        </Link>
+                        <>
+                          <Link
+                            to={`/${
+                              user?.role === 'admin' ? 'admin' : 'instructor'
+                            }/courses/${course.slug || course._id}/enrollments`}
+                            className="text-purple-600 hover:underline mr-4 font-medium"
+                          >
+                            Pendaftar
+                          </Link>
+                          <Link
+                            to={`/${user?.role}/courses/${
+                              course.slug || course._id
+                            }/analytics`}
+                            className="text-yellow-600 hover:underline mr-4 font-medium"
+                          >
+                            Analitik
+                          </Link>
+                        </>
                       )}
                       <Link
                         to={`/${

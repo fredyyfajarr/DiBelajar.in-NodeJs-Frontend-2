@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react'; // Pastikan Suspense di-import
+import React from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -15,11 +15,19 @@ import RoleBasedRoute from '/src/components/RoleBasedRoute.jsx';
 const LandingPage = React.lazy(() => import('/src/pages/LandingPage.jsx'));
 const AllCoursesPage = React.lazy(() =>
   import('/src/pages/AllCoursesPage.jsx')
-); // <-- 1. IMPORT HALAMAN BARU
+);
 const CourseDetailPage = React.lazy(() =>
   import('/src/pages/CourseDetailPage.jsx')
 );
 const DashboardPage = React.lazy(() => import('/src/pages/DashboardPage.jsx'));
+
+// Halaman baru untuk profil
+const EditProfilePage = React.lazy(() =>
+  import('/src/pages/EditProfilePage.jsx')
+);
+const ProfilePage = React.lazy(() => import('/src/pages/ProfilePage.jsx'));
+
+// Halaman Admin
 const AdminDashboardPage = React.lazy(() =>
   import('/src/pages/admin/AdminDashboardPage.jsx')
 );
@@ -38,21 +46,28 @@ const MaterialDetailPage = React.lazy(() =>
 const EnrollmentManagementPage = React.lazy(() =>
   import('/src/pages/admin/EnrollmentManagementPage.jsx')
 );
+
+// Halaman Instruktur
 const InstructorEnrollmentPage = React.lazy(() =>
   import('/src/pages/instructor/InstructorEnrollmentPage.jsx')
 );
 const StudentProgressPage = React.lazy(() =>
   import('/src/pages/instructor/StudentProgressPage.jsx')
 );
+
+// Halaman Siswa
 const StudentDashboardPage = React.lazy(() =>
   import('/src/pages/student/StudentDashboardPage.jsx')
 );
 const LearningPage = React.lazy(() =>
   import('/src/pages/student/LearningPage.jsx')
 );
-
 const CertificatePage = React.lazy(() =>
   import('/src/pages/student/CertificatePage.jsx')
+);
+// Anda juga memerlukan halaman analitik
+const CourseAnalyticsPage = React.lazy(() =>
+  import('/src/pages/instructor/CourseAnalyticsPage.jsx')
 );
 
 function App() {
@@ -60,13 +75,13 @@ function App() {
     <Router>
       <Routes>
         <Route element={<MainLayout />}>
-          {/* MainLayout akan menangani Suspense fallback */}
           {/* Rute Publik */}
           <Route path="/" element={<LandingPage />} />
           <Route path="/search" element={<LandingPage />} />
-          <Route path="/courses" element={<AllCoursesPage />} />{' '}
-          {/* <-- 2. TAMBAHKAN RUTE BARU */}
+          <Route path="/courses" element={<AllCoursesPage />} />
           <Route path="/courses/:courseSlug" element={<CourseDetailPage />} />
+          <Route path="/profile/:userSlug" element={<ProfilePage />} />{' '}
+          {/* <-- RUTE PROFIL PUBLIK */}
           {/* Rute Terproteksi */}
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<DashboardPage />} />
@@ -79,7 +94,8 @@ function App() {
               path="/learn/:courseSlug/certificate"
               element={<CertificatePage />}
             />
-
+            <Route path="/profile/edit" element={<EditProfilePage />} />{' '}
+            {/* <-- RUTE EDIT PROFIL (PRIVAT) */}
             {/* Rute Khusus Admin */}
             <Route
               path="/admin"
@@ -100,8 +116,12 @@ function App() {
                 path="enrollments"
                 element={<EnrollmentManagementPage />}
               />
+              {/* Admin juga bisa akses analitik */}
+              <Route
+                path="courses/:courseId/analytics"
+                element={<CourseAnalyticsPage />}
+              />
             </Route>
-
             {/* Rute Khusus Instruktur */}
             <Route
               path="/instructor"
@@ -127,6 +147,11 @@ function App() {
                 path="courses/:courseId/student-progress/:userId"
                 element={<StudentProgressPage />}
               />
+              <Route
+                path="courses/:courseId/analytics"
+                element={<CourseAnalyticsPage />}
+              />{' '}
+              {/* <-- RUTE ANALITIK */}
             </Route>
           </Route>
         </Route>
