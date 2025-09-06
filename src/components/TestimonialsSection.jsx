@@ -1,39 +1,38 @@
 /* eslint-disable no-unused-vars */
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Star, Quote, ArrowLeft, ArrowRight } from 'lucide-react';
 
 const testimonials = [
   {
-    quote: 'Materinya sangat komprehensif dan mudah dipahami. Berkat DiBelajar.in, saya berhasil menjadi Full Stack Developer di perusahaan teknologi terkemuka.',
-    name: 'Ahmad Sahroni',
-    role: 'Full Stack Developer',
-    company: 'TechCorp Indonesia',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+    quote: 'Overall, pengalaman saya dengan DiBelajar.in sangat positif. Kursus-kursusnya komprehensif dan instruktur sangat berpengetahuan. Saya merasa lebih percaya diri dalam keterampilan coding saya sekarang.',
+    name: 'Eka Revandi',
+    role: 'Cloud Engineer',
+    company: 'Google LLC',
+    avatar: 'https://wallpapercave.com/wp/wp4099280.jpg',
     rating: 5,
   },
   {
-    quote: 'Platform pembelajaran yang sangat user-friendly. Saya bisa belajar kapan saja dan di mana saja. Kursus UI/UX Design-nya sangat membantu karir saya.',
-    name: 'Sarah Putri',
-    role: 'UI/UX Designer',
+    quote: 'DiBelajar.in benar-benar mengubah cara saya belajar coding. Materinya mudah diikuti dan proyek-proyek praktisnya sangat membantu saya memahami konsep-konsep sulit.',
+    name: 'Kevin Ardiansyah',
+    role: 'Frontend Developer',
     company: 'Creative Studio',
-    avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
+    avatar: 'https://tse3.mm.bing.net/th/id/OIP.DVYMCPfSlOMOHo1GpeWaSAHaFt?pid=Api&P=0&h=180',
     rating: 5,
   },
   {
-    quote: 'Sebagai pemula di dunia programming, DiBelajar.in memberikan fondasi yang kuat. Instruktur sangat berpengalaman dan materi sangat terstruktur.',
-    name: 'Budi Santoso',
+    quote: 'Saya sangat merekomendasikan DiBelajar.in kepada siapa saja yang ingin memulai karir di bidang teknologi. Kursusnya terstruktur dengan baik dan komunitasnya sangat mendukung.',
+    name: 'Fredy Fajar',
     role: 'Backend Developer',
-    company: 'StartupXYZ',
-    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+    company: 'Tech Solutions',
+    avatar: 'https://imgcdn.stablediffusionweb.com/2024/12/19/ca8b5efe-8d21-4a63-9efa-cdb484e1dd99.jpg',
     rating: 5,
   },
   {
-    quote: 'Kursus Data Science di DiBelajar.in sangat lengkap dan praktis. Saya bisa langsung menerapkan ilmu yang dipelajari di pekerjaan saya.',
-    name: 'Maya Sari',
+    quote: 'Kursus-kursus di DiBelajar.in sangat up-to-date dengan tren industri terbaru. Saya merasa siap untuk menghadapi tantangan di dunia kerja setelah menyelesaikan beberapa kursus di sini.',
+    name: 'Yudi Setiawan',
     role: 'Data Scientist',
     company: 'Analytics Pro',
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+    avatar: 'https://r2.erweima.ai/imgcompressed/compressed_15f5c0cd99eb85e3030688d4d5f38afb.webp',
     rating: 5,
   },
 ];
@@ -114,7 +113,7 @@ const TestimonialsSection = () => {
                   <img
                     src={testimonials[currentIndex].avatar}
                     alt={testimonials[currentIndex].name}
-                    className="w-24 h-24 rounded-full shadow-xl ring-4 ring-white"
+                    className="w-24 h-24 rounded-full shadow-xl ring-4 ring-white object-cover"
                   />
                   <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
                     <div className="w-3 h-3 bg-white rounded-full"></div>
@@ -185,7 +184,7 @@ const TestimonialsSection = () => {
                 <img
                   src={testimonial.avatar}
                   alt={testimonial.name}
-                  className="w-10 h-10 rounded-full"
+                  className="w-10 h-10 rounded-full object-cover"
                 />
                 <div>
                   <p className="font-semibold text-sm">{testimonial.name}</p>
@@ -207,19 +206,30 @@ const TestimonialsSection = () => {
 
         {/* Stats section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20">
-          <div className="text-center p-6 bg-white rounded-2xl backdrop-blur-sm shadow-lg border border-purple-100">
-            <div className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">10K+</div>
-            <div className="text-gray-600 font-medium">Pelajar Bergabung</div>
-          </div>
-          <div className="text-center p-6 bg-white rounded-2xl backdrop-blur-sm shadow-lg border border-pink-100">
-            <div className="text-4xl font-bold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent mb-2">95%</div>
-            <div className="text-gray-600 font-medium">Tingkat Kepuasan</div>
-          </div>
-          <div className="text-center p-6 bg-white rounded-2xl backdrop-blur-sm shadow-lg border border-purple-100">
-            <div className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">4.9</div>
-            <div className="text-gray-600 font-medium">Rating Rata-rata</div>
+        <div className="group text-center p-8 bg-white/90 backdrop-blur-lg rounded-3xl shadow-xl border border-purple-100/50 transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/20 hover:-translate-y-2">
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-600/5 to-pink-600/5 opacity-0 group-hover:opacity-100 rounded-3xl transition-opacity duration-500"></div>
+          <div className="relative">
+            <div className="text-5xl font-black bg-gradient-to-r from-purple-600 via-purple-500 to-pink-600 bg-clip-text text-transparent mb-3 transform transition-transform group-hover:scale-110">10K+</div>
+            <div className="text-gray-700 font-semibold text-lg">Pelajar Bergabung</div>
           </div>
         </div>
+
+        <div className="group text-center p-8 bg-white/90 backdrop-blur-lg rounded-3xl shadow-xl border border-pink-100/50 transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-pink-500/20 hover:-translate-y-2" style={{animationDelay: '0.2s'}}>
+          <div className="absolute inset-0 bg-gradient-to-br from-pink-600/5 to-purple-600/5 opacity-0 group-hover:opacity-100 rounded-3xl transition-opacity duration-500"></div>
+          <div className="relative">
+            <div className="text-5xl font-black bg-gradient-to-r from-pink-600 via-pink-500 to-purple-600 bg-clip-text text-transparent mb-3 transform transition-transform group-hover:scale-110">95%</div>
+            <div className="text-gray-700 font-semibold text-lg">Tingkat Kepuasan</div>
+          </div>
+        </div>
+
+        <div className="group text-center p-8 bg-white/90 backdrop-blur-lg rounded-3xl shadow-xl border border-purple-100/50 transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-purple-500/20 hover:-translate-y-2" style={{animationDelay: '0.4s'}}>
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-600/5 to-pink-600/5 opacity-0 group-hover:opacity-100 rounded-3xl transition-opacity duration-500"></div>
+          <div className="relative">
+            <div className="text-5xl font-black bg-gradient-to-r from-purple-600 via-purple-500 to-pink-600 bg-clip-text text-transparent mb-3 transform transition-transform group-hover:scale-110">4.9</div>
+            <div className="text-gray-700 font-semibold text-lg">Rating Rata-rata</div>
+          </div>
+        </div>
+      </div>
       </div>
     </section>
   );
