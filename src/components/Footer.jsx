@@ -11,7 +11,10 @@ const Footer = () => {
   return (
     <footer className="bg-white border-t border-gray-800 mt-auto">
       <div className="container mx-auto px-4 sm:px-6 py-6 text-center text-gray-400">
-        <p>&copy; {new Date().getFullYear()} Isachuu. All Rights Reserved.</p>
+        <p>
+          &copy; {new Date().getFullYear()} Isaachuu ft Caiden All Rights
+          Reserved.
+        </p>
         <div className="flex justify-center space-x-6 mt-4">
           <motion.a
             href="#"
