@@ -6,15 +6,27 @@ const testimonials = [
   {
     quote:
       'Materi sangat relevan, membantu saya menjadi web developer di TechCorp!',
-    name: 'Ahmad Subarjo',
+    name: 'Fredy Fajar',
     role: 'Web Developer',
-    avatar: 'https://placehold.co/100x100/E2E8F0/475569?text=AS',
+    avatar: 'https://placehold.co/100x100/E2E8F0/475569?text=FF',
   },
   {
     quote: 'Kursus desainnya luar biasa, sangat membantu pemula seperti saya!',
-    name: 'Siti Aminah',
+    name: 'Kevin Ardiansyah',
     role: 'UI/UX Designer',
-    avatar: 'https://placehold.co/100x100/E2E8F0/475569?text=SA',
+    avatar: 'https://placehold.co/100x100/E2E8F0/475569?text=KA',
+  },
+  {
+    quote: 'Kursusnya sangat menarik, membantu saya menjadi Cloud Engineer!',
+    name: 'Eka Revandi',
+    role: 'Cloud Engineer',
+    avatar: 'https://placehold.co/100x100/E2E8F0/475569?text=ER',
+  },
+  {
+    quote: 'Kursusnya sangat membantu, membantu saya menjadi Mobile Developer!',
+    name: 'Yudi Setiawan',
+    role: 'Mobile Developer',
+    avatar: 'https://placehold.co/100x100/E2E8F0/475569?text=YS',
   },
 ];
 
