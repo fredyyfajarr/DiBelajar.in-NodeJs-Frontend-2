@@ -1,9 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import useModalStore from '/src/store/modalStore.js';
 import useAuthStore from '/src/store/authStore.js';
 import { ThemeContext } from '/src/context/ThemeContext.jsx';
 import { getDashboardPath } from '../utils/getDashboardPath';
+import { useNotifications, useMarkNotificationAsRead } from '../hooks/useAdmin'; // <-- Import hooks notifikasi
+import { AnimatePresence, motion } from 'framer-motion';
 
 const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -12,8 +14,14 @@ const Navbar = () => {
   const { toggleTheme } = useContext(ThemeContext);
   const { openModal } = useModalStore();
   const { isAuthenticated, user, logout } = useAuthStore();
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // State untuk hamburger menu guest
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State untuk admin sidebar
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false); // <-- State baru untuk notifikasi
+
+  const notificationsRef = useRef(null);
+  const { data: notificationsData, isLoading: notificationsLoading } =
+    useNotifications();
+  const unreadCount = notificationsData?.filter((n) => !n.isRead).length;
 
   const handleLogout = () => {
     if (window.confirm('Are you sure want to logout?')) {
@@ -29,6 +37,26 @@ const Navbar = () => {
       setSearchQuery('');
     }
   };
+
+  const toggleNotifications = () => {
+    setIsNotificationsOpen(!isNotificationsOpen);
+  };
+
+  // Close dropdown saat klik di luar
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        notificationsRef.current &&
+        !notificationsRef.current.contains(event.target)
+      ) {
+        setIsNotificationsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [notificationsRef]);
 
   const dashboardPath = getDashboardPath(user);
   const isAdminPage =
@@ -123,6 +151,57 @@ const Navbar = () => {
         )}
 
         <div className="flex items-center space-x-2 flex-shrink-0">
+          {isAuthenticated && (
+            <div className="relative" ref={notificationsRef}>
+              <button
+                onClick={toggleNotifications}
+                className="p-2 rounded-full hover:bg-gray-200 relative"
+                aria-label="Notifikasi"
+              >
+                🔔
+                {unreadCount > 0 && (
+                  <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full animate-pulse"></span>
+                )}
+              </button>
+              <AnimatePresence>
+                {isNotificationsOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    className="absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-xl z-50 overflow-hidden"
+                  >
+                    <div className="p-4 border-b">
+                      <h3 className="font-semibold text-gray-800">
+                        Notifikasi
+                      </h3>
+                    </div>
+                    {notificationsLoading ? (
+                      <div className="p-4 text-center text-gray-500">
+                        Memuat...
+                      </div>
+                    ) : (
+                      <div className="max-h-60 overflow-y-auto">
+                        {notificationsData.length > 0 ? (
+                          notificationsData.map((n) => (
+                            <NotificationItem
+                              key={n._id}
+                              notification={n}
+                              onClose={toggleNotifications}
+                            />
+                          ))
+                        ) : (
+                          <div className="p-4 text-center text-gray-500">
+                            Tidak ada notifikasi baru.
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )}
           <button
             onClick={toggleTheme}
             className="p-2 rounded-full hover:bg-gray-200"
@@ -251,5 +330,32 @@ const styles = `
 const styleSheet = document.createElement('style');
 styleSheet.textContent = styles;
 document.head.appendChild(styleSheet);
+
+const NotificationItem = ({ notification, onClose }) => {
+  const { mutate: markAsRead } = useMarkNotificationAsRead();
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    markAsRead(notification._id);
+    onClose();
+    navigate(notification.link);
+  };
+
+  return (
+    <div
+      onClick={handleClick}
+      className={`p-3 border-b cursor-pointer transition-all ${
+        !notification.isRead
+          ? 'bg-indigo-50 hover:bg-indigo-100'
+          : 'hover:bg-gray-50'
+      }`}
+    >
+      <p className="text-sm text-text-primary">{notification.message}</p>
+      <p className="text-xs text-text-muted mt-1">
+        {new Date(notification.createdAt).toLocaleDateString()}
+      </p>
+    </div>
+  );
+};
 
 export default Navbar;

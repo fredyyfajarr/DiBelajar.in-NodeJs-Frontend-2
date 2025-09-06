@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import adminService from '/src/api/adminService.js';
 import studentService from '../api/studentService';
 import useAuthStore from '/src/store/authStore.js';
+import * as notificationService from '../api/notificationService';
 
 const queryOptions = {
   staleTime: 5 * 60 * 1000, // Data dianggap fresh selama 5 menit
@@ -266,5 +267,25 @@ export const useStudentProgress = (courseId, userId) => {
     queryKey: ['studentProgress', courseId, userId],
     queryFn: () => adminService.getStudentProgress(courseId, userId),
     enabled: !!courseId && !!userId, // Hanya aktif jika kedua ID ada
+  });
+};
+
+// Hook baru untuk mengambil notifikasi
+export const useNotifications = () => {
+  return useQuery({
+    queryKey: ['notifications'],
+    queryFn: notificationService.getNotifications,
+    refetchOnWindowFocus: true, // Notifikasi biasanya butuh di-refresh
+  });
+};
+
+// Hook untuk menandai notifikasi sudah dibaca
+export const useMarkNotificationAsRead = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: notificationService.markNotificationAsRead,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] });
+    },
   });
 };

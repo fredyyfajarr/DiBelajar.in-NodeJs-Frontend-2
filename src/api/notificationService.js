@@ -1,16 +1,21 @@
-import axios from './axiosInstance';
+import axiosInstance from './axiosInstance';
 
 export const getNotifications = async () => {
-  const response = await axios.get('/api/notifications');
+  // Hapus duplikasi '/api'
+  const response = await axiosInstance.get('/notifications');
   return response.data.data;
 };
 
 export const markNotificationAsRead = async (notificationId) => {
-  const response = await axios.put(`/api/notifications/${notificationId}/read`);
+  // Hapus duplikasi '/api'
+  const response = await axiosInstance.put(
+    `/notifications/${notificationId}/read`
+  );
   return response.data;
 };
 
 export const markAllNotificationsAsRead = async () => {
-  const response = await axios.put('/api/notifications/read-all');
+  // Hapus duplikasi '/api'
+  const response = await axiosInstance.put('/notifications/read-all');
   return response.data;
 };

@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import studentService from '/src/api/studentService.js';
 import { useNavigate } from 'react-router-dom';
+import { useNotifications } from './useAdmin';
+import studentService from '/src/api/studentService.js';
 
 export const useEnrollInCourse = () => {
   const navigate = useNavigate();
@@ -58,6 +59,10 @@ export const useUpdateProgress = () => {
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({
         queryKey: ['course', variables.courseSlug],
+      });
+      // Perbarui cache notifikasi
+      queryClient.invalidateQueries({
+        queryKey: ['notifications'],
       });
     },
     onError: (error) => {

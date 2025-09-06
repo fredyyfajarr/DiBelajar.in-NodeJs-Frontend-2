@@ -31,7 +31,14 @@ const CourseDetailPage = () => {
     );
   }
 
-  const { course, materials } = data;
+  const { course, materials } = data || {};
+  if (!course) {
+    return (
+      <div className="flex items-center justify-center min-h-screen text-red-500">
+        Kursus tidak ditemukan.
+      </div>
+    );
+  }
   const materialsToShow = isAuthenticated ? materials : materials.slice(0, 3);
 
   const handleEnrollClick = () => {
