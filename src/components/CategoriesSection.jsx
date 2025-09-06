@@ -3,25 +3,42 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useCategories } from '/src/hooks/useCategories.js';
+import {
+  Laptop,
+  Palette,
+  TrendingUp,
+  BarChart,
+  Code,
+  Layers,
+  Briefcase,
+  Zap,
+  Theater,
+  DollarSign,
+  BookOpen,
+  Cpu,
+  LaptopMinimal, // kalau mau pakai ikon laptop
+} from "lucide-react";
+
 
 // Helper function untuk mendapatkan icon berdasarkan nama kategori
 const getCategoryIcon = (name) => {
-  const iconMap = {
-    'Web Development': '💻',
-    'Design': '🎨',
-    'Digital Marketing': '📈',
-    'Data Science': '📊',
-    'Programming': '💻',
-    'UI/UX': '🎨',
-    'Marketing': '📈',
-    'Data': '📊',
-    'Business': '💼',
-    'Technology': '⚡',
-    'Creative': '🎭',
-    'Finance': '💰'
+  const iconMap = { 
+    'Web Development': <Laptop className="w-10 h-10 text-white" />,
+    'Design': <Palette className="w-10 h-10 text-white" />,
+    'Digital Marketing': <TrendingUp className="w-10 h-10 text-white" />,
+    'Data Science': <BarChart className="w-10 h-10 text-white" />,
+    'Programming': <Code className="w-10 h-10 text-white" />,
+    'UI/UX': <Layers className="w-10 h-10 text-white" />,
+    'Marketing': <TrendingUp className="w-10 h-10 text-white" />,
+    'Data': <BarChart className="w-10 h-10 text-white" />,
+    'Business': <Briefcase className="w-10 h-10 text-white" />,
+    'Technology': <Zap className="w-10 h-10 text-white" />,
+    'Creative': <Theater className="w-10 h-10 text-white" />,
+    'Finance': <DollarSign className="w-10 h-10 text-white" />,
   };
-  return iconMap[name] || '📚';
+  return iconMap[name] || <BookOpen className="w-10 h-10 text-white" />;
 };
+
 
 // Helper function untuk mendapatkan gradient berdasarkan index
 const getCategoryGradient = (index) => {
@@ -78,10 +95,10 @@ const CategoriesSection = () => {
               </span>
               <br />
               <span className="text-gray-700">Populer</span>
-            </h2>
+          </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
-              Memuat kategori...
-            </p>
+            Memuat kategori...
+          </p>
           </div>
         </div>
       </div>
@@ -148,10 +165,10 @@ const CategoriesSection = () => {
             const icon = getCategoryIcon(category.name);
             
             return (
-              <motion.div
-                key={category._id}
-                variants={cardVariants}
-                whileHover={{
+            <motion.div
+              key={category._id}
+              variants={cardVariants}
+              whileHover={{
                   y: -12,
                   scale: 1.05,
                   transition: { 
@@ -213,9 +230,9 @@ const CategoriesSection = () => {
                     {/* Decorative elements */}
                     <div className="absolute top-4 right-4 w-12 h-12 bg-white/20 rounded-full opacity-50"></div>
                     <div className="absolute bottom-4 left-4 w-8 h-8 bg-white/10 rounded-full opacity-30"></div>
-                  </div>
-                </Link>
-              </motion.div>
+                </div>
+              </Link>
+            </motion.div>
             );
           })}
         </motion.div>

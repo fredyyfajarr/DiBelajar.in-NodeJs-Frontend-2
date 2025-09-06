@@ -1,66 +1,25 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Users, BookOpen, Heart } from 'lucide-react';
 
 const features = [
   {
-    icon: (
-      <svg
-        className="w-12 h-12"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-        />
-      </svg>
-    ),
+    icon: <Users className="w-10 h-10" />,
     title: 'Instruktur Ahli',
     description: 'Belajar dari praktisi terbaik di industrinya.',
     gradient: 'from-purple-500 to-purple-600',
     bgGradient: 'from-purple-50 to-purple-100',
   },
   {
-    icon: (
-      <svg
-        className="w-12 h-12"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-        />
-      </svg>
-    ),
+    icon: <BookOpen className="w-10 h-10" />,
     title: 'Pembelajaran Fleksibel',
     description: 'Akses materi kapan saja sesuai kecepatan Anda.',
     gradient: 'from-pink-500 to-rose-500',
     bgGradient: 'from-pink-50 to-pink-100',
   },
   {
-    icon: (
-      <svg
-        className="w-12 h-12"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-        />
-      </svg>
-    ),
+    icon: <Heart className="w-10 h-10" />,
     title: 'Gratis Selamanya',
     description: '100% gratis tanpa biaya tersembunyi.',
     gradient: 'from-purple-600 to-pink-600',
@@ -187,17 +146,10 @@ const FeaturesSection = () => {
                       boxShadow: "0 20px 40px rgba(139, 92, 246, 0.3)",
                     }}
                   >
-                    <div className={`bg-gradient-to-br ${feature.gradient} bg-clip-text text-transparent`}>
-                      {React.cloneElement(feature.icon, {
-                        className: `w-10 h-10`,
-                        style: { 
-                          background: `linear-gradient(135deg, #8B5CF6, #EC4899)`,
-                          WebkitBackgroundClip: 'text',
-                          WebkitTextFillColor: 'transparent',
-                          backgroundClip: 'text'
-                        }
-                      })}
+                    <div className={`text-gray-700`}>
+                     {feature.icon}
                     </div>
+
                   </motion.div>
 
                   {/* Floating Particles */}
