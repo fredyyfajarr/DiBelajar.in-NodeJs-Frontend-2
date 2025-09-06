@@ -11,29 +11,36 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // State Management
   const { toggleTheme } = useContext(ThemeContext);
   const { openModal } = useModalStore();
   const { isAuthenticated, user, logout } = useAuthStore();
 
-  // Local State
+  const [searchQuery, setSearchQuery] = useState(''); // <-- State untuk search
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDesktopProfileOpen, setIsDesktopProfileOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
 
-  // Refs for closing dropdowns
   const notificationsRef = useRef(null);
   const profileRef = useRef(null);
 
-  // Notifications Logic
   const { data: notificationsData } = useNotifications();
   const unreadCount = notificationsData?.filter((n) => !n.isRead).length;
 
   const handleLogout = () => {
     if (window.confirm('Apakah Anda yakin ingin keluar?')) {
       logout();
-      setIsMobileMenuOpen(false); // Pastikan menu mobile tertutup
+      setIsMobileMenuOpen(false);
       navigate('/');
+    }
+  };
+
+  // --- Fungsi untuk handle submit search ---
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/?q=${searchQuery.trim()}`);
+      setSearchQuery('');
+      setIsMobileMenuOpen(false); // Tutup menu setelah search
     }
   };
 
@@ -42,7 +49,6 @@ const Navbar = () => {
     location.pathname.startsWith('/admin') ||
     location.pathname.startsWith('/instructor');
 
-  // Effect to close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -59,7 +65,6 @@ const Navbar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Effect to close mobile menu on route change
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
@@ -67,7 +72,6 @@ const Navbar = () => {
   return (
     <header className="bg-white shadow-sm w-full sticky top-0 z-50">
       <div className="container mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-4">
-        {/* Left Section: Logo */}
         <div className="flex items-center gap-2">
           <Link to="/" className="block">
             <img
@@ -78,7 +82,6 @@ const Navbar = () => {
           </Link>
         </div>
 
-        {/* Right Section: Icons & Menus */}
         <div className="flex items-center space-x-2 flex-shrink-0">
           <button
             onClick={toggleTheme}
@@ -90,7 +93,6 @@ const Navbar = () => {
 
           {isAuthenticated ? (
             <>
-              {/* Notification Bell */}
               <div className="relative" ref={notificationsRef}>
                 <button
                   onClick={() => setIsNotificationsOpen(!isNotificationsOpen)}
@@ -108,7 +110,6 @@ const Navbar = () => {
                 />
               </div>
 
-              {/* Desktop Profile Dropdown */}
               <div className="relative hidden md:block" ref={profileRef}>
                 <button
                   onClick={() => setIsDesktopProfileOpen(!isDesktopProfileOpen)}
@@ -139,7 +140,6 @@ const Navbar = () => {
                 />
               </div>
 
-              {/* Mobile Hamburger Menu (HANYA UNTUK USER YANG LOGIN) */}
               <button
                 className="md:hidden p-2 text-primary"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -148,33 +148,32 @@ const Navbar = () => {
               </button>
             </>
           ) : (
-            // Guest View (sudah login tidak akan melihat ini)
-            <div className="hidden md:flex items-center space-x-2">
-              <button
-                onClick={() => openModal('LOGIN')}
-                className="px-4 py-2 text-sm font-semibold rounded-md hover:bg-gray-100"
-              >
-                Login
-              </button>
-              <button
-                onClick={() => openModal('REGISTER')}
-                className="bg-primary text-white px-4 py-2 text-sm font-semibold rounded-md hover:opacity-90"
-              >
-                Register
-              </button>
-              {/* Hamburger untuk Guest di mobile */}
+            <>
+              <div className="hidden md:flex items-center space-x-2">
+                <button
+                  onClick={() => openModal('LOGIN')}
+                  className="bg-primary text-white px-4 py-2 text-sm font-semibold rounded-md hover:opacity-90"
+                >
+                  Login
+                </button>
+                <button
+                  onClick={() => openModal('REGISTER')}
+                  className="bg-primary text-white px-4 py-2 text-sm font-semibold rounded-md hover:opacity-90"
+                >
+                  Register
+                </button>
+              </div>
               <button
                 className="md:hidden p-2 text-primary"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               >
                 <HamburgerIcon isOpen={isMobileMenuOpen} />
               </button>
-            </div>
+            </>
           )}
         </div>
       </div>
 
-      {/* Mobile Dropdown Menu Content */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
@@ -216,20 +215,54 @@ const Navbar = () => {
                   </button>
                 </div>
               ) : (
-                <div className="flex flex-col space-y-2">
-                  <button
-                    onClick={() => openModal('LOGIN')}
-                    className="w-full text-left px-4 py-2 text-base text-gray-700 hover:bg-gray-100 rounded-md"
-                  >
-                    Login
-                  </button>
-                  <button
-                    onClick={() => openModal('REGISTER')}
-                    className="w-full bg-primary text-white px-4 py-2 text-base font-semibold rounded-md hover:opacity-90"
-                  >
-                    Register
-                  </button>
+                // --- INI BAGIAN YANG DIPERBARUI UNTUK GUEST ---
+                <div className="flex flex-col space-y-4">
+                  <form onSubmit={handleSearchSubmit}>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3">
+                        <svg
+                          className="h-5 w-5 text-text-muted"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                            clipRule="evenodd"
+                          />
+                        </svg>
+                      </span>
+                      <input
+                        type="text"
+                        placeholder="Cari kursus apa saja..."
+                        className="w-full pl-10 pr-4 py-2 border border-border rounded-full focus:outline-none focus:ring-2 focus:ring-primary"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                    </div>
+                  </form>
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => {
+                        openModal('LOGIN');
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="flex-1 bg-primary text-white px-4 py-2 text-base font-semibold rounded-md hover:opacity-90"
+                    >
+                      Login
+                    </button>
+                    <button
+                      onClick={() => {
+                        openModal('REGISTER');
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="flex-1 bg-primary text-white px-4 py-2 text-base font-semibold rounded-md hover:opacity-90"
+                    >
+                      Register
+                    </button>
+                  </div>
                 </div>
+                // --- AKHIR BAGIAN YANG DIPERBARUI ---
               )}
             </div>
           </motion.div>
@@ -239,8 +272,7 @@ const Navbar = () => {
   );
 };
 
-// --- Komponen-komponen Helper --- (TIDAK ADA PERUBAHAN DI BAWAH INI)
-
+// --- Komponen-komponen Helper (TIDAK ADA PERUBAHAN) ---
 const HamburgerIcon = ({ isOpen }) => (
   <div className={`space-y-1.5`}>
     <motion.span
