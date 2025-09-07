@@ -27,8 +27,9 @@ const MainLayout = () => {
 
   const isHomePage = location.pathname === "/";
   
-  // ✅ Tambah pengecualian untuk learning page
+  // ✅ Tambah pengecualian untuk learning page dan student dashboard
   const isLearningPage = location.pathname.includes("/learn/");
+  const isStudentDashboard = location.pathname === "/student-dashboard";
 
   const pageLoadingFallback = (
     <div className="flex justify-center items-center h-full p-10">
@@ -79,8 +80,8 @@ const MainLayout = () => {
               </Suspense>
             </div>
           </div>
-        ) : isLearningPage ? (
-          // ✅ Learning Page - Full width tanpa padding/container
+        ) : isLearningPage || isStudentDashboard ? (
+          // ✅ Learning Page & Student Dashboard - Full width tanpa padding/container
           <div className="w-full">
             <Suspense fallback={pageLoadingFallback}>
               <Outlet />
@@ -96,8 +97,8 @@ const MainLayout = () => {
         )}
       </main>
 
-      {/* Footer - tidak ditampilkan di learning page */}
-      {!isLearningPage && (
+      {/* Footer - tidak ditampilkan di learning page dan student dashboard */}
+      {!isLearningPage && !isStudentDashboard && (
         <div className="relative z-20">
           <Footer />
         </div>
