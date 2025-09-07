@@ -75,13 +75,15 @@ const AboutPage = () => {
       name: "Fredy Fajar",
       role: "Backend Engineer",
       description: "Merancang dan mengembangkan sistem backend yang efisien dan scalable.",
-      gradient: "from-purple-600 to-pink-600"
+      gradient: "from-purple-600 to-pink-600",
+      image: "/isak.png"
     },
     {
       name: "Eka Revandi",
       role: "Frontend Engineer",
       description: "Mengembangkan antarmuka pengguna yang intuitif dan responsif untuk pengalaman belajar yang lebih baik.",
-      gradient: "from-pink-500 to-rose-500"
+      gradient: "from-pink-500 to-rose-500",
+      image: "/revan.jpg"
     },
   ];
 
@@ -293,15 +295,18 @@ const AboutPage = () => {
                 className="group text-center"
               >
                 <div className="relative bg-white rounded-3xl p-8 shadow-xl group-hover:shadow-2xl transition-all duration-500">
-                  {/* Avatar Placeholder */}
-                  <motion.div
-                    className={`w-24 h-24 mx-auto mb-6 rounded-full bg-gradient-to-br ${member.gradient} flex items-center justify-center group-hover:scale-110 transition-transform duration-300`}
-                    whileHover={{ rotate: [0, -10, 10, 0] }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <Users className="w-12 h-12 text-white" />
-                  </motion.div>
-
+                  {/* Avatar Foto */}
+                    <motion.div
+                      className="w-24 h-24 mx-auto mb-6 rounded-full overflow-hidden shadow-lg group-hover:scale-110 transition-transform duration-300"
+                      whileHover={{ rotate: [0, -5, 5, 0] }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <img
+                        src={member.image}
+                        alt={member.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </motion.div>
                   {/* Name */}
                   <h3 className="text-2xl font-bold mb-2 group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-pink-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
                     {member.name}

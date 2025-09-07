@@ -7,6 +7,7 @@ import { useEnrollInCourse } from '/src/hooks/useStudent.js';
 import useAuthStore from '/src/store/authStore.js';
 import useModalStore from '/src/store/modalStore.js';
 import CourseReviews from '../components/CourseReviews';
+import { BookOpen, Clock, Video, Lock, ArrowRight, Plus } from 'lucide-react';
 
 const CourseDetailPage = () => {
   const { courseSlug } = useParams();
@@ -84,18 +85,13 @@ const CourseDetailPage = () => {
               </h1>
               
               <div className="flex items-center gap-4 mb-8">
-                <div className="w-16 h-16 bg-gradient-to-br from-pink-500 via-purple-500 to-pink-600 rounded-3xl flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold text-2xl">
-                    {(course.instructorId?.name || 'Instruktur Ahli').charAt(0)}
-                  </span>
-                </div>
                 <div>
                   <p className="text-gray-900 font-bold text-xl">
-                    {course.instructorId?.name || 'Instruktur Ahli'}
+                    <span className='text-gray-600 text-xl'>Di Terbitkan Oleh </span> {course.instructorId?.name || 'Instruktur Ahli'}
                   </p>
                 </div>
               </div>
-              
+          
               <div
                 className="prose prose-lg prose-pink max-w-none text-gray-700 leading-relaxed"
                 dangerouslySetInnerHTML={{ __html: course.description }}
@@ -110,13 +106,13 @@ const CourseDetailPage = () => {
               className="mb-10"
             >
               <div className="flex items-center gap-6 mb-8">
-                <div className="w-12 h-12 bg-gradient-to-br from-pink-500 via-purple-500 to-pink-600 rounded-2xl flex items-center justify-center shadow-lg">
-                  <span className="text-white font-bold">📚</span>
+                <div className="w-12 h-12 bg-pink-500 rounded-2xl flex items-center justify-center shadow-lg text-white">
+                  <BookOpen size={24} />
                 </div>
                 <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
                   Materi Kursus
                 </h2>
-                <div className="flex-1 h-1 bg-gradient-to-r from-pink-300 to-purple-300 rounded-full"></div>
+                <div className="flex-1 h-1 bg-pink-200 rounded-full"></div>
               </div>
               
               <div className="space-y-6">
@@ -129,7 +125,7 @@ const CourseDetailPage = () => {
                     className="group bg-white/80 backdrop-blur-sm border border-pink-100 rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
                   >
                     <div className="flex items-start gap-6">
-                      <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-pink-500 via-purple-500 to-pink-600 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
+                      <div className="flex-shrink-0 w-14 h-14 bg-pink-500 rounded-2xl flex items-center justify-center text-white font-bold text-xl shadow-lg">
                         {index + 1}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -144,15 +140,11 @@ const CourseDetailPage = () => {
                         />
                         <div className="flex items-center gap-6 text-sm text-gray-600">
                           <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 bg-pink-100 rounded-full flex items-center justify-center">
-                              <span className="text-pink-600 text-xs">⏱</span>
-                            </div>
+                            <Clock className="w-4 h-4 text-pink-600" />
                             <span className="font-medium">15 menit</span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
-                              <span className="text-purple-600 text-xs">📹</span>
-                            </div>
+                            <Video className="w-4 h-4 text-pink-600" />
                             <span className="font-medium">Video</span>
                           </div>
                         </div>
@@ -174,9 +166,9 @@ const CourseDetailPage = () => {
                   transition={{ delay: 0.6 }}
                   className="mt-8"
                 >
-                  <div className="bg-gradient-to-br from-pink-50 via-white to-purple-50 rounded-3xl p-10 text-center border-2 border-dashed border-pink-300 shadow-lg">
-                    <div className="w-20 h-20 bg-gradient-to-br from-pink-500 via-purple-500 to-pink-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg">
-                      <span className="text-white text-3xl">🔒</span>
+                  <div className="bg-pink-50 rounded-3xl p-10 text-center border-2 border-dashed border-pink-300 shadow-lg">
+                    <div className="w-20 h-20 bg-pink-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg text-white">
+                       <Lock size={40} />
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">
                       Masih Ada {materials.length - 3} Materi Lagi!
@@ -188,9 +180,9 @@ const CourseDetailPage = () => {
                       whileHover={{ scale: 1.05, y: -2 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => openModal('LOGIN')}
-                      className="bg-gradient-to-r from-pink-500 via-purple-500 to-pink-600 text-white font-bold px-10 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 inline-flex items-center gap-3"
+                      className="bg-pink-600 hover:bg-pink-700 text-white font-bold px-10 py-4 rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 inline-flex items-center gap-3"
                     >
-                      <span>→</span>
+                      <ArrowRight size={20} />
                       Login atau Daftar Gratis
                     </motion.button>
                   </div>
@@ -244,7 +236,7 @@ const CourseDetailPage = () => {
                     whileTap={{ scale: 0.98 }}
                     onClick={handleEnrollClick}
                     disabled={isEnrolling}
-                    className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-pink-600 text-white font-bold py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                    className="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
                   >
                     {isEnrolling ? (
                       <>
@@ -253,7 +245,7 @@ const CourseDetailPage = () => {
                       </>
                     ) : (
                       <>
-                        <span>+</span>
+                        <Plus size={20}/>
                         Daftar ke Kursus Ini
                       </>
                     )}
@@ -263,9 +255,9 @@ const CourseDetailPage = () => {
                     whileHover={{ scale: 1.02, y: -2 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => openModal('LOGIN')}
-                    className="w-full bg-gradient-to-r from-pink-500 via-purple-500 to-pink-600 text-white font-bold py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-3"
+                    className="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-3"
                   >
-                    <span>→</span>
+                    <ArrowRight size={20}/>
                     Login untuk Mendaftar
                   </motion.button>
                 )}
