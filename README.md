@@ -75,4 +75,4 @@ Ini adalah bagian frontend dari aplikasi Learning Management System (LMS) "DiBel
 
 ### ©️ Lisensi & Copyright
 
-Copyright (c) 2025 Fredy Fajar Adi Putra. Seluruh hak cipta dilindungi.
+Copyright (c) 2025 DiBelajarin Seluruh hak cipta dilindungi.
