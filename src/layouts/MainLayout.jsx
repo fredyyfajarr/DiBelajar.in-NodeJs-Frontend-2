@@ -1,5 +1,4 @@
 // src/layouts/MainLayout.jsx
-// src/layouts/MainLayout.jsx
 import React, { Suspense, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -27,6 +26,9 @@ const MainLayout = () => {
     location.pathname.startsWith("/instructor");
 
   const isHomePage = location.pathname === "/";
+  
+  // ✅ Tambah pengecualian untuk learning page
+  const isLearningPage = location.pathname.includes("/learn/");
 
   const pageLoadingFallback = (
     <div className="flex justify-center items-center h-full p-10">
@@ -55,7 +57,7 @@ const MainLayout = () => {
           : "bg-white"
       }`}
     >
-      {/* Background hanya di home */}
+      {/* background buat di home */}
       {isHomePage && <HomeBackground />}
 
       {/* Navbar */}
@@ -63,7 +65,7 @@ const MainLayout = () => {
         <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
       </div>
 
-      {/* Main Content */}
+      {/* Konten Utama */}
       <main className="flex-grow relative z-20">
         {isPanelPage ? (
           <div className="container mx-auto flex flex-col md:flex-row gap-4 py-8 px-4 sm:px-6">
@@ -77,7 +79,15 @@ const MainLayout = () => {
               </Suspense>
             </div>
           </div>
+        ) : isLearningPage ? (
+          // ✅ Learning Page - Full width tanpa padding/container
+          <div className="w-full">
+            <Suspense fallback={pageLoadingFallback}>
+              <Outlet />
+            </Suspense>
+          </div>
         ) : (
+          // ✅ Halaman lain - dengan container dan padding normal
           <div className="w-full px-6 sm:px-8 lg:px-12 max-w-7xl mx-auto py-12">
             <Suspense fallback={pageLoadingFallback}>
               <Outlet />
@@ -86,10 +96,12 @@ const MainLayout = () => {
         )}
       </main>
 
-      {/* Footer */}
-      <div className="relative z-20">
-        <Footer />
-      </div>
+      {/* Footer - tidak ditampilkan di learning page */}
+      {!isLearningPage && (
+        <div className="relative z-20">
+          <Footer />
+        </div>
+      )}
 
       {/* Modal auth */}
       <Modal isOpen={isModalOpen} onClose={closeModal}>
