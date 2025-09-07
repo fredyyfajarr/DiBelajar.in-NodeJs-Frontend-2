@@ -333,6 +333,263 @@ const AboutPage = () => {
         </div>
       </div>
 
+      {/* Tech Stack Section */}
+      <div className="py-20">
+        <div className="container mx-auto px-4 sm:px-6">
+          <motion.div
+            className="text-center mb-16"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-5xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                Tech Stack
+              </span>
+            </h2>
+            <div className="w-24 h-1 bg-gradient-to-r from-purple-500 to-pink-500 mx-auto mb-8 rounded-full"></div>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Platform DiBelajar.in dibangun dengan teknologi modern dan terdepan untuk memberikan 
+              pengalaman pembelajaran yang optimal dan performa terbaik.
+            </p>
+          </motion.div>
+
+          {/* Tech Categories - Vertical Layout */}
+          <div className="space-y-16">
+            {/* Frontend */}
+            <motion.div
+              className="text-center"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <h3 className="text-3xl font-bold mb-12 text-gray-800">Frontend</h3>
+              <div className="flex justify-center">
+                <div className="grid grid-cols-2 md:grid-cols-2 gap-8 max-w-md">
+                  <motion.div
+                    className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+                    whileHover={{ y: -8, scale: 1.05 }}
+                  >
+                    <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                      <img 
+                        src="/icons/React.svg" 
+                        alt="React" 
+                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                      />
+                    </div>
+                    <h4 className="text-lg font-semibold text-gray-800 mb-2">React</h4>
+                    <p className="text-sm text-gray-600">UI Library</p>
+                  </motion.div>
+
+                  <motion.div
+                    className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+                    whileHover={{ y: -8, scale: 1.05 }}
+                  >
+                    <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                      <img 
+                        src="/icons/Tailwind CSS.svg" 
+                        alt="Tailwind CSS" 
+                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                      />
+                    </div>
+                    <h4 className="text-lg font-semibold text-gray-800 mb-2">Tailwind CSS</h4>
+                    <p className="text-sm text-gray-600">CSS Framework</p>
+                  </motion.div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Backend */}
+            <motion.div
+              className="text-center"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              <h3 className="text-3xl font-bold mb-12 text-gray-800">Backend</h3>
+              <div className="flex justify-center">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-8 max-w-2xl">
+                  <motion.div
+                    className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+                    whileHover={{ y: -8, scale: 1.05 }}
+                  >
+                    <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                      <img 
+                        src="/icons/Node.js.svg" 
+                        alt="Node.js" 
+                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                      />
+                    </div>
+                    <h4 className="text-lg font-semibold text-gray-800 mb-2">Node.js</h4>
+                    <p className="text-sm text-gray-600">Runtime Environment</p>
+                  </motion.div>
+
+                  <motion.div
+                    className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+                    whileHover={{ y: -8, scale: 1.05 }}
+                  >
+                    <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                      <img 
+                        src="/icons/Express.svg" 
+                        alt="Express.js" 
+                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                      />
+                    </div>
+                    <h4 className="text-lg font-semibold text-gray-800 mb-2">Express.js</h4>
+                    <p className="text-sm text-gray-600">Web Framework</p>
+                  </motion.div>
+
+                  <motion.div
+                    className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 col-span-2 md:col-span-1"
+                    whileHover={{ y: -8, scale: 1.05 }}
+                  >
+                    <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                      <img 
+                        src="/icons/MongoDB.svg" 
+                        alt="MongoDB" 
+                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                      />
+                    </div>
+                    <h4 className="text-lg font-semibold text-gray-800 mb-2">MongoDB</h4>
+                    <p className="text-sm text-gray-600">NoSQL Database</p>
+                  </motion.div>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Tools & Cloud */}
+            <motion.div
+              className="text-center"
+              initial={{ opacity: 0, y: 50 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              viewport={{ once: true }}
+            >
+              <h3 className="text-3xl font-bold mb-12 text-gray-800">Tools & Cloud</h3>
+              <div className="flex justify-center">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl">
+                  <motion.div
+                    className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+                    whileHover={{ y: -8, scale: 1.05 }}
+                  >
+                    <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                      <img 
+                        src="/icons/AWS.svg" 
+                        alt="AWS" 
+                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                      />
+                    </div>
+                    <h4 className="text-lg font-semibold text-gray-800 mb-2">AWS</h4>
+                    <p className="text-sm text-gray-600">Cloud Provider</p>
+                  </motion.div>
+
+                  <motion.div
+                    className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+                    whileHover={{ y: -8, scale: 1.05 }}
+                  >
+                    <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                      <img 
+                        src="/icons/Figma.svg" 
+                        alt="Figma" 
+                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                      />
+                    </div>
+                    <h4 className="text-lg font-semibold text-gray-800 mb-2">Figma</h4>
+                    <p className="text-sm text-gray-600">UI/UX Design</p>
+                  </motion.div>
+
+                  <motion.div
+                    className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+                    whileHover={{ y: -8, scale: 1.05 }}
+                  >
+                    <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                      <img 
+                        src="/icons/WebStorm.svg" 
+                        alt="WebStorm" 
+                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                      />
+                    </div>
+                    <h4 className="text-lg font-semibold text-gray-800 mb-2">WebStorm</h4>
+                    <p className="text-sm text-gray-600">IDE</p>
+                  </motion.div>
+
+                  <motion.div
+                    className="group bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+                    whileHover={{ y: -8, scale: 1.05 }}
+                  >
+                    <div className="w-20 h-20 mx-auto mb-6 flex items-center justify-center">
+                      <img 
+                        src="/icons/Nodemon.svg" 
+                        alt="Nodemon" 
+                        className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-300"
+                      />
+                    </div>
+                    <h4 className="text-lg font-semibold text-gray-800 mb-2">Nodemon</h4>
+                    <p className="text-sm text-gray-600">Development Tool</p>
+                  </motion.div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Tech Stack Features */}
+          <motion.div
+            className="mt-16 bg-gradient-to-br from-purple-50/50 to-pink-50/50 rounded-3xl p-8 md:p-12"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            viewport={{ once: true }}
+          >
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              <motion.div
+                className="text-center"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Zap className="w-8 h-8 text-purple-600" />
+                </div>
+                <h4 className="text-lg font-bold mb-2 text-gray-800">Performa Tinggi</h4>
+                <p className="text-gray-600 text-sm">
+                  Dioptimalkan untuk kecepatan dan responsivitas maksimal
+                </p>
+              </motion.div>
+
+              <motion.div
+                className="text-center"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Globe className="w-8 h-8 text-purple-600" />
+                </div>
+                <h4 className="text-lg font-bold mb-2 text-gray-800">Scalable</h4>
+                <p className="text-gray-600 text-sm">
+                  Arsitektur yang dapat menangani jutaan pengguna
+                </p>
+              </motion.div>
+
+              <motion.div
+                className="text-center"
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Award className="w-8 h-8 text-purple-600" />
+                </div>
+                <h4 className="text-lg font-bold mb-2 text-gray-800">Modern</h4>
+                <p className="text-gray-600 text-sm">
+                  Menggunakan teknologi terbaru dan best practices
+                </p>
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+
       {/* CTA Section */}
       <div className="py-20">
         <div className="container mx-auto px-4 sm:px-6">
