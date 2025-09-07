@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import useModalStore from '/src/store/modalStore.js';
 import useAuthStore from '/src/store/authStore.js';
+import useToastStore from '/src/store/toastStore.js';
 import { ThemeContext } from '/src/context/ThemeContext.jsx';
 import { getDashboardPath } from '../utils/getDashboardPath';
 import { Sun, Moon, LogOut, Search, User, Menu, X, Home, BookOpen, Settings, ChevronDown } from 'lucide-react';
@@ -13,18 +14,34 @@ const Navbar = () => {
   const { toggleTheme } = useContext(ThemeContext);
   const { openModal } = useModalStore();
   const { isAuthenticated, user, logout } = useAuthStore();
+  const { confirm, success } = useToastStore();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
   const handleLogout = () => {
-    if (window.confirm('Yakin mau logout?')) {
-      logout();
-      navigate('/');
-      setIsMenuOpen(false);
-      setIsProfileDropdownOpen(false);
-    }
+    confirm('Apakah Anda yakin ingin keluar dari akun?', {
+      title: 'Konfirmasi Logout',
+      actions: [
+        {
+          label: 'Batal',
+          handler: () => {},
+          primary: false
+        },
+        {
+          label: 'Logout',
+          handler: () => {
+            logout();
+            navigate('/');
+            setIsMenuOpen(false);
+            setIsProfileDropdownOpen(false);
+            success('Berhasil logout dari akun Anda');
+          },
+          primary: true
+        }
+      ]
+    });
   };
 
   const handleSearchSubmit = (e) => {

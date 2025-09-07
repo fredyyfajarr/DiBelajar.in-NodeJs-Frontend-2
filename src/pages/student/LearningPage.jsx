@@ -4,6 +4,7 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useCourseDetail } from '/src/hooks/useCourses.js';
 import { useUpdateProgress } from '/src/hooks/useStudent.js';
+import useToastStore from '/src/store/toastStore.js';
 import SubmissionModal from '/src/components/SubmissionModal.jsx';
 import TestModal from '../../components/TestModal.jsx';
 import ForumModal from '../../components/ForumModal.jsx';
@@ -84,15 +85,38 @@ const MaterialItem = ({
   const hasTest = material.testContent && material.testContent.length > 0;
 
   const { mutate: updateProgress } = useUpdateProgress();
+  const { confirm, success, error } = useToastStore();
+  
   const handleCompleteMaterial = () => {
-    if (window.confirm('Apakah Anda yakin ingin menyelesaikan materi ini?')) {
-      updateProgress({
-        courseId: courseId,
-        materialId: material._id,
-        step: 'completion',
-        courseSlug,
-      });
-    }
+    confirm('Apakah Anda yakin ingin menyelesaikan materi ini?', {
+      title: 'Konfirmasi Penyelesaian',
+      actions: [
+        {
+          label: 'Batal',
+          handler: () => {},
+          primary: false
+        },
+        {
+          label: 'Selesaikan',
+          handler: () => {
+            updateProgress({
+              courseId: courseId,
+              materialId: material._id,
+              step: 'completion',
+              courseSlug,
+            }, {
+              onSuccess: () => {
+                success('Materi berhasil diselesaikan!');
+              },
+              onError: () => {
+                error('Gagal menyelesaikan materi');
+              }
+            });
+          },
+          primary: true
+        }
+      ]
+    });
   };
 
   const canCompleteMaterial =

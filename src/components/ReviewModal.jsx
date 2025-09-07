@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import Modal from './Modal';
+import useToastStore from '/src/store/toastStore.js';
 import {
   useAddReview,
   useUpdateReview,
@@ -45,6 +46,7 @@ const ReviewModal = ({
   const { mutate: addReview, isPending: isAdding } = useAddReview();
   const { mutate: updateReview, isPending: isUpdating } = useUpdateReview();
   const { mutate: deleteReview, isPending: isDeleting } = useDeleteReview();
+  const { warning, success, error, confirm } = useToastStore();
 
   useEffect(() => {
     // console.log('currentReview di useEffect:', currentReview); // Tambahkan log ini
@@ -60,7 +62,9 @@ const ReviewModal = ({
 
   const onSubmit = (data) => {
     if (rating === 0) {
-      alert('Anda harus memberikan rating bintang.');
+      warning('Anda harus memberikan rating bintang.', {
+        title: 'Rating Diperlukan'
+      });
       return;
     }
     const reviewData = { rating, comment: data.comment };
@@ -70,8 +74,12 @@ const ReviewModal = ({
         { courseSlug, reviewData },
         {
           onSuccess: () => {
+            success('Ulasan berhasil diperbarui');
             onClose();
           },
+          onError: () => {
+            error('Gagal memperbarui ulasan');
+          }
         }
       );
     } else {
@@ -79,18 +87,44 @@ const ReviewModal = ({
         { courseSlug, reviewData },
         {
           onSuccess: () => {
+            success('Ulasan berhasil ditambahkan');
             setRating(0);
             onClose();
           },
+          onError: () => {
+            error('Gagal menambahkan ulasan');
+          }
         }
       );
     }
   };
 
   const handleDelete = () => {
-    if (window.confirm('Apakah Anda yakin ingin menghapus ulasan ini?')) {
-      deleteReview(courseSlug, { onSuccess: onClose });
-    }
+    confirm('Apakah Anda yakin ingin menghapus ulasan ini?', {
+      title: 'Konfirmasi Hapus',
+      actions: [
+        {
+          label: 'Batal',
+          handler: () => {},
+          primary: false
+        },
+        {
+          label: 'Hapus',
+          handler: () => {
+            deleteReview(courseSlug, { 
+              onSuccess: () => {
+                success('Ulasan berhasil dihapus');
+                onClose();
+              },
+              onError: () => {
+                error('Gagal menghapus ulasan');
+              }
+            });
+          },
+          primary: true
+        }
+      ]
+    });
   };
 
   const isPending = isAdding || isUpdating || isDeleting;

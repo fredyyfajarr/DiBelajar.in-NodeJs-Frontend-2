@@ -1,10 +1,12 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import useAuthStore from '/src/store/authStore.js';
+import useToastStore from '/src/store/toastStore.js';
 import { useUpdateUser } from '/src/hooks/useAdmin.js'; // Bisa dipakai ulang
 
 const EditProfilePage = () => {
   const { user, updateUser: updateUserInStore } = useAuthStore();
+  const { success, error } = useToastStore();
   const {
     register,
     handleSubmit,
@@ -26,10 +28,14 @@ const EditProfilePage = () => {
       {
         onSuccess: (response) => {
           updateUserInStore(response.data); // Update state di Zustand
-          alert('Profil berhasil diperbarui!');
+          success('Profil berhasil diperbarui!', {
+            title: 'Update Berhasil'
+          });
         },
-        onError: (error) => {
-          alert(error.response?.data?.error || 'Gagal memperbarui profil.');
+        onError: (err) => {
+          error(err.response?.data?.error || 'Gagal memperbarui profil.', {
+            title: 'Update Gagal'
+          });
         },
       }
     );

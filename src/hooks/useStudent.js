@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import { useNotifications } from './useAdmin';
 import studentService from '/src/api/studentService.js';
+import toast from '/src/utils/toast.js';
 
 export const useEnrollInCourse = () => {
   const navigate = useNavigate();
@@ -10,11 +11,15 @@ export const useEnrollInCourse = () => {
   return useMutation({
     mutationFn: studentService.enrollInCourse,
     onSuccess: (data, courseId) => {
-      alert('Selamat! Anda berhasil terdaftar di kursus ini.');
+      toast.success('Selamat! Anda berhasil terdaftar di kursus ini.', {
+        title: 'Pendaftaran Berhasil'
+      });
       navigate('/student-dashboard');
     },
     onError: (error) => {
-      alert(error.response?.data?.error || 'Gagal mendaftar ke kursus.');
+      toast.error(error.response?.data?.error || 'Gagal mendaftar ke kursus.', {
+        title: 'Pendaftaran Gagal'
+      });
     },
   });
 };
@@ -31,10 +36,14 @@ export const useSubmitAssignment = () => {
   return useMutation({
     mutationFn: studentService.submitAssignment,
     onSuccess: () => {
-      alert('Tugas berhasil dikumpulkan!');
+      toast.success('Tugas berhasil dikumpulkan!', {
+        title: 'Pengumpulan Berhasil'
+      });
     },
     onError: (error) => {
-      alert(error.response?.data?.error || 'Gagal mengumpulkan tugas.');
+      toast.error(error.response?.data?.error || 'Gagal mengumpulkan tugas.', {
+        title: 'Pengumpulan Gagal'
+      });
     },
   });
 };
@@ -44,10 +53,14 @@ export const useSubmitTestResult = () => {
     mutationFn: studentService.submitTestResult,
     onSuccess: (data) => {
       const score = data.data.score;
-      alert(`Tes selesai! Skor Anda: ${score}`);
+      toast.success(`Tes selesai! Skor Anda: ${score}`, {
+        title: 'Tes Berhasil Diselesaikan'
+      });
     },
     onError: (error) => {
-      alert(error.response?.data?.error || 'Gagal mengirimkan hasil tes.');
+      toast.error(error.response?.data?.error || 'Gagal mengirimkan hasil tes.', {
+        title: 'Tes Gagal'
+      });
     },
   });
 };
@@ -66,7 +79,9 @@ export const useUpdateProgress = () => {
       });
     },
     onError: (error) => {
-      alert(error.response?.data?.error || 'Gagal memperbarui progres.');
+      toast.error(error.response?.data?.error || 'Gagal memperbarui progres.', {
+        title: 'Update Progres Gagal'
+      });
     },
   });
 };
@@ -98,10 +113,14 @@ export const useAddReview = () => {
       queryClient.invalidateQueries({
         queryKey: ['my-review', variables.courseSlug],
       });
-      alert('Terima kasih atas ulasan Anda!');
+      toast.success('Terima kasih atas ulasan Anda!', {
+        title: 'Ulasan Berhasil'
+      });
     },
     onError: (error) => {
-      alert(error.response?.data?.error || 'Gagal mengirim ulasan.');
+      toast.error(error.response?.data?.error || 'Gagal mengirim ulasan.', {
+        title: 'Ulasan Gagal'
+      });
     },
   });
 };
@@ -127,10 +146,14 @@ export const useUpdateReview = () => {
       queryClient.invalidateQueries({
         queryKey: ['my-review', variables.courseSlug],
       });
-      alert('Ulasan berhasil diperbarui!');
+      toast.success('Ulasan berhasil diperbarui!', {
+        title: 'Update Berhasil'
+      });
     },
     onError: (error) => {
-      alert(error.response?.data?.error || 'Gagal memperbarui ulasan.');
+      toast.error(error.response?.data?.error || 'Gagal memperbarui ulasan.', {
+        title: 'Update Gagal'
+      });
     },
   });
 };
@@ -149,10 +172,14 @@ export const useDeleteReview = () => {
       queryClient.invalidateQueries({
         queryKey: ['reviews', courseSlug],
       });
-      alert('Ulasan berhasil dihapus.');
+      toast.success('Ulasan berhasil dihapus.', {
+        title: 'Hapus Berhasil'
+      });
     },
     onError: (error) => {
-      alert(error.response?.data?.error || 'Gagal menghapus ulasan.');
+      toast.error(error.response?.data?.error || 'Gagal menghapus ulasan.', {
+        title: 'Hapus Gagal'
+      });
     },
   });
 };

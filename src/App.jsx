@@ -10,6 +10,7 @@ import {
 import MainLayout from '/src/layouts/MainLayout.jsx';
 import ProtectedRoute from '/src/components/ProtectedRoute.jsx';
 import RoleBasedRoute from '/src/components/RoleBasedRoute.jsx';
+import ToastContainer from '/src/components/Toast.jsx';
 
 // Halaman-halaman di-import menggunakan React.lazy
 const LandingPage = React.lazy(() => import('/src/pages/LandingPage.jsx'));
@@ -26,6 +27,10 @@ const EditProfilePage = React.lazy(() =>
   import('/src/pages/EditProfilePage.jsx')
 );
 const ProfilePage = React.lazy(() => import('/src/pages/ProfilePage.jsx'));
+
+// Halaman About dan Contact
+const AboutPage = React.lazy(() => import('/src/pages/AboutPage.jsx'));
+const ContactPage = React.lazy(() => import('/src/pages/ContactPage.jsx'));
 
 // Halaman Admin
 const AdminDashboardPage = React.lazy(() =>
@@ -76,6 +81,7 @@ const CourseAnalyticsPage = React.lazy(() =>
 function App() {
   return (
     <Router>
+      <ToastContainer />
       <Routes>
         <Route element={<MainLayout />}>
           {/* Rute Publik */}
@@ -83,6 +89,8 @@ function App() {
           <Route path="/search" element={<LandingPage />} />
           <Route path="/courses" element={<AllCoursesPage />} />
           <Route path="/courses/:courseSlug" element={<CourseDetailPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/profile/:userSlug" element={<ProfilePage />} />{' '}
           {/* <-- RUTE PROFIL PUBLIK */}
           {/* Rute Terproteksi */}

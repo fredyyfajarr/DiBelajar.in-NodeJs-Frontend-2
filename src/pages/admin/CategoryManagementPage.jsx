@@ -1,5 +1,6 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
+import useToastStore from '/src/store/toastStore.js';
 import {
   useCategories,
   useCreateCategory,
@@ -11,17 +12,45 @@ const CategoryManagementPage = () => {
   const { register, handleSubmit, reset } = useForm();
   const { mutate: createCategory, isPending } = useCreateCategory();
   const { mutate: deleteCategory } = useDeleteCategory();
+  const { success, error, confirm } = useToastStore();
 
   const onSubmit = (data) => {
     createCategory(data, {
-      onSuccess: () => reset(),
+      onSuccess: () => {
+        reset();
+        success('Kategori berhasil ditambahkan');
+      },
+      onError: () => {
+        error('Gagal menambahkan kategori');
+      }
     });
   };
 
   const handleDelete = (id) => {
-    if (window.confirm('Yakin ingin menghapus kategori ini?')) {
-      deleteCategory(id);
-    }
+    confirm('Yakin ingin menghapus kategori ini?', {
+      title: 'Konfirmasi Hapus',
+      actions: [
+        {
+          label: 'Batal',
+          handler: () => {},
+          primary: false
+        },
+        {
+          label: 'Hapus',
+          handler: () => {
+            deleteCategory(id, {
+              onSuccess: () => {
+                success('Kategori berhasil dihapus');
+              },
+              onError: () => {
+                error('Gagal menghapus kategori');
+              }
+            });
+          },
+          primary: true
+        }
+      ]
+    });
   };
 
   return (
