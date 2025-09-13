@@ -28,6 +28,9 @@ const EditProfilePage = React.lazy(() =>
 );
 const ProfilePage = React.lazy(() => import('/src/pages/ProfilePage.jsx'));
 
+// Halaman baru untuk pengaturan
+const SettingsPage = React.lazy(() => import('/src/pages/SettingsPage.jsx'));
+
 // Halaman About dan Contact
 const AboutPage = React.lazy(() => import('/src/pages/AboutPage.jsx'));
 const ContactPage = React.lazy(() => import('/src/pages/ContactPage.jsx'));
@@ -105,7 +108,9 @@ function App() {
               path="/learn/:courseSlug/certificate"
               element={<CertificatePage />}
             />
+            <Route path="/profile" element={<ProfilePage />} />
             <Route path="/profile/edit" element={<EditProfilePage />} />{' '}
+            <Route path="/settings" element={<SettingsPage />} />
             {/* <-- RUTE EDIT PROFIL (PRIVAT) */}
             {/* Rute Khusus Admin */}
             <Route
