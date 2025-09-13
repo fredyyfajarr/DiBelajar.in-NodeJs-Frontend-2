@@ -1,20 +1,18 @@
 // src/layouts/MainLayout.jsx
-import React, { Suspense, useState } from "react";
-import { Outlet, useLocation } from "react-router-dom";
-import { motion } from "framer-motion";
+import React, { Suspense, useState, useEffect } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
-import Navbar from "/src/components/Navbar.jsx";
-import Footer from "/src/components/Footer.jsx";
-import Modal from "/src/components/Modal.jsx";
-import useModalStore from "/src/store/modalStore.js";
-import AdminSidebar from "/src/components/admin/AdminSidebar.jsx";
+import Navbar from '/src/components/Navbar.jsx';
+import Footer from '/src/components/Footer.jsx';
+import Modal from '/src/components/Modal.jsx';
+import useModalStore from '/src/store/modalStore.js';
+import AdminSidebar from '/src/components/admin/AdminSidebar.jsx';
 
-// ✅ Pakai path sesuai struktur kamu (tidak ada folder /auth)
-import LoginPage from "/src/pages/LoginPage.jsx";
-import RegisterPage from "/src/pages/RegisterPage.jsx";
-import ForgotPasswordPage from "/src/pages/ForgotPasswordPage.jsx";
-
-import HomeBackground from "/src/components/backgrounds/HomeBackground.jsx";
+import LoginPage from '/src/pages/LoginPage.jsx';
+import RegisterPage from '/src/pages/RegisterPage.jsx';
+import ForgotPasswordPage from '/src/pages/ForgotPasswordPage.jsx';
+import HomeBackground from '/src/components/backgrounds/HomeBackground.jsx';
 
 const MainLayout = () => {
   const { isModalOpen, modalView, closeModal } = useModalStore();
@@ -22,14 +20,12 @@ const MainLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const isPanelPage =
-    location.pathname.startsWith("/admin") ||
-    location.pathname.startsWith("/instructor");
+    location.pathname.startsWith('/admin') ||
+    location.pathname.startsWith('/instructor');
 
-  const isHomePage = location.pathname === "/";
-  
-  // ✅ Tambah pengecualian untuk learning page dan student dashboard
-  const isLearningPage = location.pathname.includes("/learn/");
-  const isStudentDashboard = location.pathname === "/student-dashboard";
+  const isHomePage = location.pathname === '/';
+  const isLearningPage = location.pathname.includes('/learn/');
+  const isStudentDashboard = location.pathname === '/student-dashboard';
 
   const pageLoadingFallback = (
     <div className="flex justify-center items-center h-full p-10">
@@ -50,23 +46,27 @@ const MainLayout = () => {
     setIsSidebarOpen(isOpen);
   };
 
+  // Efek untuk mengatur body saat modal dibuka
+  useEffect(() => {
+    document.body.style.overflow = isModalOpen ? 'hidden' : 'auto';
+    document.body.classList.toggle('modal-open', isModalOpen);
+    return () => document.body.classList.remove('modal-open');
+  }, [isModalOpen]);
+
   return (
     <div
       className={`flex flex-col min-h-screen relative overflow-hidden ${
         isHomePage
-          ? "bg-gradient-to-br from-slate-50 to-purple-50/30"
-          : "bg-white"
-      }`}
+          ? 'bg-gradient-to-br from-slate-50 to-purple-50/30'
+          : 'bg-white'
+      } ${isModalOpen ? 'modal-open' : ''}`}
     >
-      {/* background buat di home */}
       {isHomePage && <HomeBackground />}
 
-      {/* Navbar */}
-      <div className="relative z-30">
+      <div className={`relative ${isModalOpen ? 'z-10' : 'z-30'}`}>
         <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
       </div>
 
-      {/* Konten Utama */}
       <main className="flex-grow relative z-20">
         {isPanelPage ? (
           <div className="container mx-auto flex flex-col md:flex-row gap-4 py-8 px-4 sm:px-6">
@@ -81,14 +81,12 @@ const MainLayout = () => {
             </div>
           </div>
         ) : isLearningPage || isStudentDashboard ? (
-          // ✅ Learning Page & Student Dashboard - Full width tanpa padding/container
           <div className="w-full">
             <Suspense fallback={pageLoadingFallback}>
               <Outlet />
             </Suspense>
           </div>
         ) : (
-          // ✅ Halaman lain - dengan container dan padding normal
           <div className="w-full px-6 sm:px-8 lg:px-12 max-w-7xl mx-auto py-12">
             <Suspense fallback={pageLoadingFallback}>
               <Outlet />
@@ -97,19 +95,20 @@ const MainLayout = () => {
         )}
       </main>
 
-      {/* Footer - tidak ditampilkan di learning page dan student dashboard */}
       {!isLearningPage && !isStudentDashboard && (
-        <div className="relative z-20">
+        <div className="relative z-10">
           <Footer />
         </div>
       )}
 
-      {/* Modal auth */}
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        {modalView === "LOGIN" && <LoginPage />}
-        {modalView === "REGISTER" && <RegisterPage />}
-        {modalView === "FORGOT_PASSWORD" && <ForgotPasswordPage />}
-      </Modal>
+      {/* Modal */}
+      {isModalOpen && (
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+          {modalView === 'LOGIN' && <LoginPage />}
+          {modalView === 'REGISTER' && <RegisterPage />}
+          {modalView === 'FORGOT_PASSWORD' && <ForgotPasswordPage />}
+        </Modal>
+      )}
 
       {/* Overlay sidebar mobile */}
       {isSidebarOpen && (
