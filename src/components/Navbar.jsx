@@ -32,7 +32,6 @@ const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
-  // ... (semua fungsi handler Anda tetap sama, tidak perlu diubah)
   const handleLogout = () => {
     confirm('Apakah Anda yakin ingin keluar dari akun?', {
       title: 'Konfirmasi Logout',
@@ -135,13 +134,13 @@ const Navbar = () => {
 
   return (
     <>
-      {/* ===== PERUBAHAN UTAMA DI SINI ===== */}
-      {/* HAPUS SEMUA KELAS 'z-index' DARI HEADER */}
-      <header className="bg-white fixed top-0 left-0 right-0 w-full shadow-lg border-b border-gray-100 transition-all duration-300">
+      <header
+        className={`bg-white fixed top-0 left-0 right-0 w-full shadow-lg border-b border-gray-100 transition-all duration-300 ${
+          isMenuOpen ? 'z-30 opacity-50' : 'z-50 opacity-100'
+        }`}
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            {/* ... sisa kode di dalam header sama persis ... */}
-
             {/* Left Section */}
             <div className="flex items-center space-x-8">
               {/* Sidebar Toggle untuk Admin */}
@@ -251,9 +250,9 @@ const Navbar = () => {
                         <ChevronDown className="h-4 w-4 text-gray-400" />
                       </button>
 
-                      {/* Dropdown Menu - HAPUS 'z-50' DARI SINI */}
+                      {/* Dropdown Menu */}
                       {isProfileDropdownOpen && (
-                        <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200 py-2">
+                        <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
                           <div className="px-4 py-3 border-b border-gray-100">
                             <p className="text-sm font-medium text-gray-900">
                               {user?.name}
@@ -360,7 +359,25 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-        {/* ... sisa kode di bawah header tetap sama ... */}
+
+        {/* Mobile Search Bar */}
+        {!isAdminPage && !isAuthenticated && isSearchOpen && (
+          <div className="md:hidden border-t border-gray-100 p-4 bg-white">
+            <form onSubmit={handleSearchSubmit}>
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Cari kursus apa saja..."
+                  className="w-full pl-10 pr-4 py-2.5 rounded-full border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary bg-gray-50 text-sm"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  autoFocus
+                />
+              </div>
+            </form>
+          </div>
+        )}
       </header>
 
       {/* Mobile Slide Menu */}
@@ -369,11 +386,219 @@ const Navbar = () => {
           isMenuOpen ? 'translate-x-0' : 'translate-x-full'
         } md:hidden`}
       >
-        {/* ... */}
+        <div className="flex flex-col h-full">
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 border-b border-gray-200">
+            <img
+              src="/purple_navbar_logo.svg"
+              alt="DiBelajar.in Logo"
+              className="h-8"
+            />
+            <button
+              onClick={closeMenu}
+              className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-all duration-200"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto">
+            {isAuthenticated ? (
+              /* Authenticated User Menu */
+              <div className="p-4 space-y-6">
+                {/* User Profile Section */}
+                <div className="flex items-center space-x-3 p-4 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl border border-primary/20">
+                  <div className="flex-shrink-0">
+                    <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center">
+                      <User className="h-6 w-6 text-white" />
+                    </div>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {user?.name}
+                    </p>
+                    <p className="text-xs text-gray-500 truncate">
+                      {user?.email}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Search Section for Authenticated Users */}
+                {!isAdminPage && (
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-medium text-gray-700">
+                      Pencarian
+                    </h3>
+                    <form onSubmit={handleSearchSubmit}>
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <input
+                          type="text"
+                          placeholder="Cari kursus apa saja..."
+                          className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                      </div>
+                    </form>
+                  </div>
+                )}
+
+                {/* Navigation Menu */}
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium text-gray-700">
+                    Navigasi
+                  </h3>
+                  <nav className="space-y-1">
+                    {authenticatedMenuItems.map((item, index) => {
+                      const Icon = item.icon;
+                      const isActive = location.pathname === item.path;
+
+                      return (
+                        <button
+                          key={index}
+                          onClick={item.action}
+                          className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all duration-200 ${
+                            isActive
+                              ? 'bg-primary text-white shadow-lg'
+                              : 'text-gray-700 hover:bg-gray-100 hover:text-primary'
+                          }`}
+                        >
+                          <Icon className="h-5 w-5 flex-shrink-0" />
+                          <span className="text-sm font-medium">
+                            {item.label}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </nav>
+                </div>
+
+                {/* Theme Toggle */}
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium text-gray-700">
+                    Pengaturan
+                  </h3>
+                  <button
+                    onClick={toggleTheme}
+                    className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-primary rounded-lg transition-all duration-200"
+                  >
+                    <Sun className="h-5 w-5 hidden dark:block" />
+                    <Moon className="h-5 w-5 block dark:hidden" />
+                    <span className="text-sm font-medium">Ganti Tema</span>
+                  </button>
+                </div>
+
+                {/* Logout Button */}
+                <div className="pt-4 border-t border-gray-200">
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center space-x-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200"
+                  >
+                    <LogOut className="h-5 w-5" />
+                    <span className="text-sm font-medium">Logout</span>
+                  </button>
+                </div>
+              </div>
+            ) : (
+              /* Guest User Menu */
+              <div className="p-4 space-y-6">
+                {/* Search Section */}
+                {!isAdminPage && (
+                  <div className="space-y-3">
+                    <form onSubmit={handleSearchSubmit}>
+                      <div className="relative">
+                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <input
+                          type="text"
+                          placeholder="Cari kursus apa saja..."
+                          className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary text-sm"
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                      </div>
+                    </form>
+                  </div>
+                )}
+
+                {/* Navigation for Guests */}
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium text-gray-700">
+                    Navigasi
+                  </h3>
+                  <nav className="space-y-1">
+                    {desktopNavItems.map((item, index) => {
+                      const Icon = item.icon;
+                      const isActive = location.pathname === item.path;
+
+                      return (
+                        <Link
+                          key={index}
+                          to={item.path}
+                          onClick={closeMenu}
+                          className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200 ${
+                            isActive
+                              ? 'bg-primary text-white shadow-lg'
+                              : 'text-gray-700 hover:bg-gray-100 hover:text-primary'
+                          }`}
+                        >
+                          <Icon className="h-5 w-5" />
+                          <span className="text-sm font-medium">
+                            {item.label}
+                          </span>
+                        </Link>
+                      );
+                    })}
+                  </nav>
+                </div>
+
+                {/* Theme Toggle */}
+                <div className="space-y-2">
+                  <h3 className="text-sm font-medium text-gray-700">
+                    Pengaturan
+                  </h3>
+                  <button
+                    onClick={toggleTheme}
+                    className="w-full flex items-center space-x-3 px-4 py-3 text-gray-700 hover:bg-gray-100 hover:text-primary rounded-lg transition-all duration-200"
+                  >
+                    <Sun className="h-5 w-5 hidden dark:block" />
+                    <Moon className="h-5 w-5 block dark:hidden" />
+                    <span className="text-sm font-medium">Ganti Tema</span>
+                  </button>
+                </div>
+
+                {/* Auth Buttons */}
+                <div className="space-y-3 pt-4 border-t border-gray-200">
+                  <button
+                    onClick={() => {
+                      openModal('LOGIN');
+                      closeMenu();
+                    }}
+                    className="w-full flex items-center justify-center space-x-2 px-4 py-3 text-primary border-2 border-primary rounded-lg hover:bg-primary hover:text-white transition-all duration-200"
+                  >
+                    <User className="h-4 w-4" />
+                    <span className="font-medium">Login</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      openModal('REGISTER');
+                      closeMenu();
+                    }}
+                    className="w-full flex items-center justify-center space-x-2 bg-primary text-white px-4 py-3 rounded-lg hover:bg-primary/90 transition-all duration-200 shadow-lg"
+                  >
+                    <span className="font-medium">Register Sekarang</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
-      <div className="pt-16">{/* ... */}</div>
-
+      {/* Add padding top to body to compensate for fixed navbar */}
+      <div className="pt-16">
+        {/* This div adds padding to prevent content from being hidden behind fixed navbar */}
+      </div>
       {(isMenuOpen || isSearchOpen) && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 md:hidden"
@@ -384,6 +609,7 @@ const Navbar = () => {
         />
       )}
 
+      {/* Desktop Dropdown Overlay */}
       {isProfileDropdownOpen && (
         <div className="fixed inset-0 z-40" onClick={closeDropdown} />
       )}

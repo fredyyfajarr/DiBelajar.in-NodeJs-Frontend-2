@@ -40,3 +40,38 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Tambahkan ke file CSS global Anda (misalnya index.css atau App.css) */
+
+/* SOLUSI UTAMA: Turunkan z-index navbar ketika modal terbuka */
+body.modal-open header {
+  z-index: 10 !important;
+}
+
+/* Pastikan navbar dropdown juga turun z-indexnya */
+body.modal-open header .relative > div {
+  z-index: 10 !important;
+}
+
+/* Pastikan modal memiliki z-index tertinggi */
+.modal-container {
+  z-index: 99999 !important;
+}
+
+/* Efek gelap dan blur pada background termasuk navbar */
+body.modal-open .main-layout-content {
+  position: relative;
+}
+
+body.modal-open .main-layout-content::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 50;
+  pointer-events: none;
+}

@@ -48,60 +48,99 @@ const MainLayout = () => {
 
   // Efek untuk mengatur body saat modal dibuka
   useEffect(() => {
-    document.body.style.overflow = isModalOpen ? 'hidden' : 'auto';
-    document.body.classList.toggle('modal-open', isModalOpen);
-    return () => document.body.classList.remove('modal-open');
+    if (isModalOpen) {
+      document.body.style.overflow = 'hidden';
+      document.body.classList.add('modal-open');
+
+      // Turunkan z-index semua element dengan z-index tinggi
+      const highZIndexElements = document.querySelectorAll(
+        'header, nav, .navbar'
+      );
+      highZIndexElements.forEach((el) => {
+        el.style.zIndex = '10';
+      });
+    } else {
+      document.body.style.overflow = 'auto';
+      document.body.classList.remove('modal-open');
+
+      // Kembalikan z-index normal
+      const highZIndexElements = document.querySelectorAll(
+        'header, nav, .navbar'
+      );
+      highZIndexElements.forEach((el) => {
+        el.style.zIndex = '';
+      });
+    }
+
+    return () => {
+      document.body.classList.remove('modal-open');
+      document.body.style.overflow = 'auto';
+    };
   }, [isModalOpen]);
 
   return (
-    <div
-      className={`flex flex-col min-h-screen relative overflow-hidden ${
-        isHomePage
-          ? 'bg-gradient-to-br from-slate-50 to-purple-50/30'
-          : 'bg-white'
-      } ${isModalOpen ? 'modal-open' : ''}`}
-    >
-      {isHomePage && <HomeBackground />}
+    <>
+      {/* Main Layout Container */}
+      <div
+        className={`flex flex-col min-h-screen relative overflow-hidden ${
+          isHomePage
+            ? 'bg-gradient-to-br from-slate-50 to-purple-50/30'
+            : 'bg-white'
+        }`}
+      >
+        {isHomePage && <HomeBackground />}
 
-      <div className={`relative ${isModalOpen ? 'z-10' : 'z-30'}`}>
-        <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
-      </div>
+        {/* Navbar dengan z-index yang lebih rendah dari modal */}
+        <div className={`relative ${isModalOpen ? 'z-10' : 'z-30'}`}>
+          <Navbar toggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} />
+        </div>
 
-      <main className="flex-grow relative z-20">
-        {isPanelPage ? (
-          <div className="container mx-auto flex flex-col md:flex-row gap-4 py-8 px-4 sm:px-6">
-            <AdminSidebar
-              isOpen={isSidebarOpen}
-              toggleSidebar={toggleSidebar}
-            />
-            <div className="w-full md:ml-4">
+        <main className="flex-grow relative z-20">
+          {isPanelPage ? (
+            <div className="container mx-auto flex flex-col md:flex-row gap-4 py-8 px-4 sm:px-6">
+              <AdminSidebar
+                isOpen={isSidebarOpen}
+                toggleSidebar={toggleSidebar}
+              />
+              <div className="w-full md:ml-4">
+                <Suspense fallback={pageLoadingFallback}>
+                  <Outlet />
+                </Suspense>
+              </div>
+            </div>
+          ) : isLearningPage || isStudentDashboard ? (
+            <div className="w-full">
               <Suspense fallback={pageLoadingFallback}>
                 <Outlet />
               </Suspense>
             </div>
-          </div>
-        ) : isLearningPage || isStudentDashboard ? (
-          <div className="w-full">
-            <Suspense fallback={pageLoadingFallback}>
-              <Outlet />
-            </Suspense>
-          </div>
-        ) : (
-          <div className="w-full px-6 sm:px-8 lg:px-12 max-w-7xl mx-auto py-12">
-            <Suspense fallback={pageLoadingFallback}>
-              <Outlet />
-            </Suspense>
+          ) : (
+            <div className="w-full px-6 sm:px-8 lg:px-12 max-w-7xl mx-auto py-12">
+              <Suspense fallback={pageLoadingFallback}>
+                <Outlet />
+              </Suspense>
+            </div>
+          )}
+        </main>
+
+        {!isLearningPage && !isStudentDashboard && (
+          <div className="relative z-10">
+            <Footer />
           </div>
         )}
-      </main>
 
-      {!isLearningPage && !isStudentDashboard && (
-        <div className="relative z-10">
-          <Footer />
-        </div>
-      )}
+        {/* Overlay sidebar mobile */}
+        {isSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+            onClick={(e) => {
+              if (e.target === e.currentTarget) toggleSidebar(false);
+            }}
+          />
+        )}
+      </div>
 
-      {/* Modal */}
+      {/* Modal dengan z-index tertinggi, diletakkan di luar container utama */}
       {isModalOpen && (
         <Modal isOpen={isModalOpen} onClose={closeModal}>
           {modalView === 'LOGIN' && <LoginPage />}
@@ -109,17 +148,7 @@ const MainLayout = () => {
           {modalView === 'FORGOT_PASSWORD' && <ForgotPasswordPage />}
         </Modal>
       )}
-
-      {/* Overlay sidebar mobile */}
-      {isSidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) toggleSidebar(false);
-          }}
-        />
-      )}
-    </div>
+    </>
   );
 };
 
